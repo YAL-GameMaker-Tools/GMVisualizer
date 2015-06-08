@@ -1,0 +1,149 @@
+.gminfo {
+	background: white;
+	border: 1px solid #d0d0d0;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	padding: 4px !important;
+	margin-top: 4px;
+}
+/** object info header */
+.gminfo h2 {
+	font-size: 112.5%;
+	margin-top: 4px;
+	margin-bottom: 2px;
+	border-bottom: 1px solid #ddd;
+	padding-bottom: 2px;
+}
+.gminfo span.event-icon, .gminfo span.action-icon {
+	background-image: url(gminfo.png);
+}
+.gminfo .event-icon {
+	float: left;
+	width: 16px;
+	height: 16px;
+	margin-right: 4px;
+}
+.gminfo .action-icon {
+	float: left;
+	width: 24px;
+	height: 24px;
+	margin-right: 4px;
+}
+.gminfo img.action-icon {
+	display: inline-block;
+	vertical-align: middle;
+}
+.gminfo span.action-icon {
+	overflow: hidden;
+	text-indent: -9999px;
+}
+.gminfo p, .gminfo ul {
+	margin: 0;
+	padding-left: 24px;
+}
+.gminfo ul, .gminfo li {
+	list-style: none;
+}
+.gminfo li {
+	margin: 2px 0;
+}
+.gminfo div {
+	margin-bottom: 2px;
+}
+.gminfo .event {
+	margin-top: 6px;
+}
+.gminfo .event > p {
+	padding-left: 0;
+	line-height: 16px;
+	border-bottom: 1px solid #ddd;
+	padding-bottom: 2px;
+	font-weight: bold;
+}
+.gminfo .event > ul {
+	padding-left: 16px;
+	padding-bottom: 4px;
+	padding-top: 2px;
+	margin-bottom: 0;
+}
+/** action block container */
+.gminfo .action {
+	line-height: 24px;
+}
+/** "relative" keyword */
+.gminfo .relative {
+	color: #080;
+}
+/** "not" keyword */
+.gminfo .not {
+	color: #080;
+}
+/** resource index */
+.gminfo .ri {
+	color: rgb(0, 120, 170);
+}
+/** a word from a [] set */
+.gminfo .set {
+	color: #080;
+}
+/** a small box representing a color. decimal value is hidden inside. */
+.gminfo .colorbox {
+	width: 14px;
+	height: 14px;
+	border: 1px solid #444;
+	text-indent: -9999px;
+	display: inline-block;
+	overflow: hidden;
+	position: relative;
+	top: 3px;
+}
+/** "for other object" / "for all *" prefix */
+.gminfo .with {
+	color: #777;
+}
+
+.gminfo .comment {
+	font-style: italic;
+	color: #777;
+}
+.gminfo .comment > .prefix {
+	width: 0;
+	text-indent: -9999px;
+	display: inline-block;
+}
+/* Code ahead */
+.gminfo .code.mono {
+	font-family: Consolas, monospace;
+	font-size: 12px;
+	line-height: 1.25;
+	margin: 0;
+}
+.gminfo .action > .code.mono {
+	margin-left: 28px;
+}
+/** */
+.gminfo .code .kw, .gminfo .code .sp {
+	color: #008;
+	font-weight: bold;
+}
+/** comments */
+.gminfo .code .co { color: #888; }
+/** numbers */
+.gminfo .code .nu { color: #00F; }
+/** hex numbers */
+.gminfo .code .nx { color: #00F; }
+/** strings */
+.gminfo .code .st { color: #00F; }
+/** resource indexes */
+.gminfo .code .ri { color: #0078AA; }
+/** standard/built-in variable */
+.gminfo .code .sv { color: #800; }
+/** standard/built-in function */
+.gminfo .code .sf { color: #800; }
+/** user-defined variable name */
+.gminfo .code .uv { color: #408; }
+/** user-defined script/function */
+.gminfo .code .uf { color: #808; }
+/** user-defined field (inst.field) */
+.gminfo .code .fd { color: #408; }
+/** preprocessor */
+.gminfo .code .pp { color: #0078AA; }

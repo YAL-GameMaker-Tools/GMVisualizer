@@ -4,3 +4,7 @@ bin/script.js
 bin/pkg.zip
 # Minified CSS:
 bin/gmvisualizer.min.css
+#
+bin/img/*.png
+#
+bin/bin.zip

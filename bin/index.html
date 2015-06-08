@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<title>GameMaker' Visualizer</title>
+	<meta name="description" content="" />
+	<link rel="stylesheet" type="text/css" href="gmvisualizer.css" />
+<style type="text/css">
+	body {
+		font: 15px sans-serif;
+		background: #fdfdfd;
+		margin: 0;
+		overflow: hidden;
+	}
+	#wrapper {
+		overflow-x: hidden;
+		overflow-y: scroll;
+		position: absolute;
+		left: 0; right: 0;
+		top: 0; bottom: 0;
+		padding: 8px;
+	}
+	p {
+		margin: 0;
+	}
+	p + p {
+		margin-top: 8px;
+	}
+	textarea, input[type=text], hr, .conf {
+		border: 1px solid #d0d0d0;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	}
+	textarea, input[type=text], hr {
+		margin: 0;
+	}
+	input[type="button"], textarea {
+		margin: 0;
+		margin-top: 4px;
+	}
+	textarea, input[type=text] {
+		width: 95%;
+		width: calc(100% - 10px);
+		min-width: calc(100% - 10px);
+		background: white;
+		padding: 4px !important;
+		font: 11px Consolas, monospace;
+	}
+	hr {
+		margin: 2px 0;
+		border-style: solid none none none;
+	}
+	.conf {
+		background: white;
+		padding: 4px;
+	}
+	.conf > p {
+		padding-left: 0;
+	}
+	.conf ul {
+		list-style: none;
+		margin: 0;
+		border-left: 3px solid #dfdfdf;
+		padding-left: 4px;
+		border-radius: 3px;
+	}
+	abbr {
+		border-bottom: 1px dotted #666;
+		cursor: help;
+	}
+</style>
+</head>
+<body><div id="wrapper">
+	<textarea id="source" rows="7" placeholder="Paste 'Object Information' code here"></textarea>
+	<br/>
+	Print:
+	<!--<input type="button" value="HTML (classic)" id="print_html_c" />-->
+	<input type="button" value="Clear" id="print_clear" />
+	<input type="button" value="HTML (modern)" id="print_html_m" />
+	<input type="button" value="BB code" id="print_bb" />
+	<input type="button" value="GML" id="print_gml" />
+	<!--<input type="button" value="BB code (GMC)" id="print_bb" />-->
+	<textarea id="out_text" rows="4" placeholder="Output goes here"></textarea>
+	Preview:
+	<div id="out_html"><div id="gminfo"></div></div>
+	<br/>
+	Settings:
+	<div class="conf">
+	<p>
+		Icon URL format (for HTML classic and BB code):
+		<br/><input type="text" value="./img/{id}.png" id="icon_url" />
+		<br/><a href="javascript:void(icon_url.value='https://7acb890fb960ba3e9ecb07d13e73d949d4af8320.googledrive.com/host/0B1HjTJ9VnKj6fkl6YTd4OG0zV2VNczNiSWp3cDB3T2hNeE9hLXJONkY0a0xYWDJiYVg5TDg/{id}.png')">Click here</a> for an example. Get the full package <a href="./pkg.zip">here</a>.
+	</p>
+	<p>
+		<abbr title="Identifiers starting with these will be highlighted as resource names.">Definitive Resource Prefixes:</abbr>
+		<br/><input type="text" id="res_pfx" value="spr_|bck_|snd_|obj_|rm_" />
+	</p>
+	<p>
+		<input type="checkbox" id="bb_section_cb" checked />
+		BB code options:
+		<ul id="bb_section_ul"><li>
+			<input type="checkbox" id="small_icons" /> Use small icons
+		</li><li>
+		<input type="checkbox" id="bb_img_alt" /> Use "[img=URL]" instead of "[img]URL[/img]"
+		</li><li>
+			<input type="checkbox" id="bb_indent_list" />
+			Use "[list]" instead of spaces for indents
+		</li><li>
+			[list] item format:
+			<ul><li>
+				<input type="radio" id="bb_list_mode_s2" name="bb_list_mode" checked />
+				[*]Item[/*]
+			</li><li>
+				<input type="radio" id="bb_list_mode_s1" name="bb_list_mode" />
+				[*]Item
+			</li><li>
+				<input type="radio" id="bb_list_mode_li" name="bb_list_mode" />
+				[li]Item[/li]
+			</li></ul>
+		</li><li>
+			Indent text:
+			<input type="text" id="bb_indent_text" value="    " />
+		</li></ul>
+	</p>
+	<p>
+		<input type="checkbox" id="gml_section_cb" checked />
+		GML generator options:
+		<ul id="gml_section_ul"><li>
+			Indent style:
+			<ul><li>
+				<input type="radio" id="gml_style_0" name="gml_style" />
+				Allman (brace-on-the-new-line)
+			</li><li>
+				<input type="radio" id="gml_style_1" name="gml_style" checked />
+				1TBS (brace-on-the-same-line)
+			</li><li>
+				<input type="radio" id="gml_style_2" name="gml_style" />
+				Whitesmiths (hi Mark)
+			</li></ul>
+		</li></ul>
+	</p>
+	</div>
+	<script src="script.js"></script>
+</div></body>
+</html>
