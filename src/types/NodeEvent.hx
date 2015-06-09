@@ -39,7 +39,10 @@ class NodeEvent extends NodeType {
 				return d;
 			}
 		case OmBB:
-			return BBStyle.img(Conf.getIconURL("t" + icon)) + " " + d;
+			s = null;
+			if (Conf.bbGMC) s = data.GMCIcons.event(icon);
+			if (s == null) s = BBStyle.img(Conf.getIconURL("t" + icon));
+			return s + " " + d;
 		default: return d;
 		}
 	}

@@ -23,13 +23,13 @@ package;
 	static inline var htmlIconImg:Int = 0;
 	static inline var htmlIconSpan:Int = 1;
 	/// Whether to use CSS (as opposed to inline styles).
-	public static var htmlModern:Bool = true;
+	static var htmlModern:Bool = true;
 	/// Whether to fill out text inside the icons for copying.
-	public static var htmlIconText:Bool = false;
+	static var htmlIconText:Bool = false;
 	//}
 	//{ BB code options
 	/// whether to use "[img=$s]" instead of "[img]$s[/img]".
-	public static var bbImgAlt:Bool = false;
+	static var bbImgAlt:Bool = false;
 	static function bbGetIndent(n:Int):String {
 		var r:String = "";
 		switch (bbIndentMode) {
@@ -39,7 +39,9 @@ package;
 		}
 		return r;
 	}
-	//
+	/// whether to use ":GM#:" smileys for icons if possible
+	static var bbGMC:Bool = false;
+	///
 	static var bbIndentMode:Int = 0;
 	static inline var bbIndentModeString:Int = 0;
 	static inline var bbIndentModeList:Int = 1;

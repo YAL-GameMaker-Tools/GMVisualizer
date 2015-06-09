@@ -70,6 +70,10 @@ class NodeAction extends NodeType {
 				+ ' alt="' + name + '"'
 				+ ' style="display: inline-block; vertical-align: middle; margin-right: 4px">';*/
 		case OmBB:
+			if (Conf.bbGMC) {
+				s = data.GMCIcons.action(iconId);
+				if (s != null) return s + " ";
+			}
 			if ((s = iconIdURL) == null) {
 				iconIdURL = s = StringTools.lpad("" + iconId, "0", 3);
 			}

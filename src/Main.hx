@@ -54,6 +54,7 @@ class Main {
 		if (f("resPfx")) r("res_pfx", s);
 		//
 		if (f("bbImgAlt")) cb("bb_img_alt", s == "1");
+		if (f("bbGMC")) cb("bb_gmc_icons", s == "1");
 		if (f("bbIndentMode")) cb("bb_indent_list", s == "1");
 		if (f("bbIndentString")) r("bb_indent_text", s);
 		if (f("bbListType")) switch (s) {
@@ -80,6 +81,7 @@ class Main {
 		f("resPfx", Conf.resPfx);
 		//
 		f("bbImgAlt", b(Conf.bbImgAlt));
+		f("bbGMC", b(Conf.bbGMC));
 		f("bbIndentMode", "" + Conf.bbIndentMode);
 		f("bbIndentString", Conf.bbIndentString);
 		f("bbListType", "" + Conf.bbListType);
@@ -98,6 +100,7 @@ class Main {
 		Conf.iconURL = f("icon_url");
 		//
 		Conf.bbImgAlt = cb("bb_img_alt");
+		Conf.bbGMC = cb("bb_gmc_icons");
 		Conf.bbIndentMode = cb("bb_indent_list") ? Conf.bbIndentModeList : Conf.bbIndentModeString;
 		Conf.bbIndentString = f("bb_indent_text");
 		if (cb("bb_list_mode_s2")) Conf.bbListType = Conf.bbListTypeStar2;

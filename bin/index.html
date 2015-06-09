@@ -73,23 +73,16 @@
 	<textarea id="source" rows="7" placeholder="Paste 'Object Information' code here"></textarea>
 	<br/>
 	Print:
-	<!--<input type="button" value="HTML (classic)" id="print_html_c" />-->
 	<input type="button" value="Clear" id="print_clear" />
 	<input type="button" value="HTML (modern)" id="print_html_m" />
 	<input type="button" value="BB code" id="print_bb" />
 	<input type="button" value="GML" id="print_gml" />
-	<!--<input type="button" value="BB code (GMC)" id="print_bb" />-->
 	<textarea id="out_text" rows="4" placeholder="Output goes here"></textarea>
 	Preview:
 	<div id="out_html"><div id="gminfo"></div></div>
 	<br/>
 	Settings:
 	<div class="conf">
-	<p>
-		Icon URL format (for HTML classic and BB code):
-		<br/><input type="text" value="./img/{id}.png" id="icon_url" />
-		<br/><a href="javascript:void(icon_url.value='https://7acb890fb960ba3e9ecb07d13e73d949d4af8320.googledrive.com/host/0B1HjTJ9VnKj6fkl6YTd4OG0zV2VNczNiSWp3cDB3T2hNeE9hLXJONkY0a0xYWDJiYVg5TDg/{id}.png')">Click here</a> for an example. Get the full package <a href="./pkg.zip">here</a>.
-	</p>
 	<p>
 		<abbr title="Identifiers starting with these will be highlighted as resource names.">Definitive Resource Prefixes:</abbr>
 		<br/><input type="text" id="res_pfx" value="spr_|bck_|snd_|obj_|rm_" />
@@ -98,9 +91,18 @@
 		<input type="checkbox" id="bb_section_cb" checked />
 		BB code options:
 		<ul id="bb_section_ul"><li>
-			<input type="checkbox" id="small_icons" /> Use small icons
+			Icon URL format:
+			<br/><input type="text" value="./img/{id}.png" id="icon_url" />
+			<br/><a href="javascript:void(icon_url.value='https://7acb890fb960ba3e9ecb07d13e73d949d4af8320.googledrive.com/host/0B1HjTJ9VnKj6fkl6YTd4OG0zV2VNczNiSWp3cDB3T2hNeE9hLXJONkY0a0xYWDJiYVg5TDg/{id}.png')">Click here</a> for an example. Get the full package <a href="./pkg.zip">here</a>.
 		</li><li>
-		<input type="checkbox" id="bb_img_alt" /> Use "[img=URL]" instead of "[img]URL[/img]"
+			<input type="checkbox" id="small_icons" />
+			Use small icons
+		</li><li>
+			<input type="checkbox" id="bb_gmc_icons" />
+			Use GMC-specific :GM#: smileys for icons where possible
+		</li><li>
+			<input type="checkbox" id="bb_img_alt" />
+			Use "[img=URL]" instead of "[img]URL[/img]"
 		</li><li>
 			<input type="checkbox" id="bb_indent_list" />
 			Use "[list]" instead of spaces for indents
