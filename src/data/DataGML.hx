@@ -82,7 +82,15 @@ class DataGML {
 		/// expression-relative-number
 		function xrn(m:MatchResult, s:String, i:Int) {
 			var x:String = xs(m, i);
-			return m.relative ? (x != "0" ? '$s + $x' : s) : x;
+			if (m.relative) {
+				if (x.charCodeAt(0) == "-".code) {
+					return s + " - " + x.substring(1);
+				} else {
+					return x != "0" ? s + " + " + x : s;
+				}
+			} else {
+				return x;
+			}
 		}
 		/// expression-relative-number-assign
 		function xrna(m:MatchResult, s:String, i:Int) {
