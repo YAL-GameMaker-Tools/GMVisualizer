@@ -7,6 +7,7 @@ import matcher.*;
  */
 class NodeAction extends NodeType {
 	public static var actions:Map<String, NodeAction> = new Map();
+	public static var iconMap:Map<Int, NodeAction> = new Map();
 	public var iconId:Int;
 	public var iconCol:Int;
 	public var iconRow:Int;
@@ -24,6 +25,7 @@ class NodeAction extends NodeType {
 			}
 		}
 		actions.set(s, this);
+		iconMap.set(icon, this);
 		this.name = name;
 		iconId = icon;
 		iconCol = icon % 100;

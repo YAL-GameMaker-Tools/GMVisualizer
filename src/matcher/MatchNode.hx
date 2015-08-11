@@ -13,6 +13,8 @@ enum MatchNode {
 	MnEOL;
 	/// "@{su}": "Cautious" string
 	MnStringUntil;
+	/// "@{mu}": "Cautious" multi-line string
+	MnMultiline;
 	/// "\n": Linebreak
 	MnLN;
 	/// "@e": An inline GML expression.

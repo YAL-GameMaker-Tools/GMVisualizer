@@ -6,6 +6,7 @@ import js.html.InputElement;
 import js.html.TextAreaElement;
 import js.html.UListElement;
 import js.Lib;
+import types.NodeEvent;
 
 /**
  * ...
@@ -13,19 +14,6 @@ import js.Lib;
  */
 
 class Main {
-	static function init() {
-		Code.init();
-		// register node types:
-		var nodeTypes = new Array<NodeType>();
-		data.DataActions.run(nodeTypes);
-		data.DataGML.run();
-		data.DataInfo.run(nodeTypes);
-		NodeType.nodeTypes = nodeTypes;
-		NodeType.nodeTypeText = new types.NodeText("@L");
-		NodeType.nodeTypeText.name = "Text";
-		types.NodeEvent.eventTypes = data.DataEvents.get();
-	}
-	//
 	inline function findId(id:String):Dynamic {
 		return Browser.document.getElementById(id);
 	}
@@ -202,7 +190,7 @@ class Main {
 		if (source.value != "") btHTMLm.onclick(null);
 	}
 	static function main() {
-		init();
+		Info.init();
 		new Main();
 	}
 }

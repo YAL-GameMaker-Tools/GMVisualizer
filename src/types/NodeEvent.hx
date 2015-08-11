@@ -13,8 +13,11 @@ class NodeEvent extends NodeType {
 		super(code);
 		this.icon = icon;
 	}
+	public function printText(v:Node, mode:OutputMode):String {
+		return printNodes(v, mode);
+	}
 	override public function print(v:Node, mode:OutputMode):String {
-		var d:String = printNodes(v, mode), r:String, s:String;
+		var d:String = printText(v, mode), r:String, s:String;
 		switch (mode) {
 		case OutputMode.OmHTML:
 			if (Conf.htmlModern && Conf.htmlIcon == Conf.htmlIconSpan) {

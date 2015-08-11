@@ -1,5 +1,5 @@
 package;
-import data.BBStyle;
+import data.*;
 import types.*;
 
 /**
@@ -95,7 +95,10 @@ class Info {
 				if (event != null) {
 					next = 0;
 					unindent();
-					event.nodes = list = [];
+					list = event.nodes;
+					if (list == null) {
+						event.nodes = list = [];
+					}
 					nodes.push(event);
 				} else { // no event
 					if ((action = types.NodeHeader.inst.read(s)) != null) {
@@ -144,7 +147,7 @@ class Info {
 		r.readString(s);
 		return r;
 	}
-	static function printNodes(nodes:Array<Node>, mode:OutputMode, tabc:Int):String {
+	public static function printNodes(nodes:Array<Node>, mode:OutputMode, tabc:Int):String {
 		var r:String = "", first:Bool = true, ln:String;
 		if (nodes.length == 0) return r;
 		switch (mode) {
@@ -239,7 +242,7 @@ class Info {
 					r += prefix + s;
 					if (first) first = false;
 				}
-				if (node.nodes != null) {
+				if (node.nodes != null && node.nodes.length > 0) {
 					r += ln + "execute code:" + ln;
 					r += ln + printNodes(node.nodes, mode, tabc + 1);
 				}
@@ -257,5 +260,19 @@ class Info {
 			return '<div class="gminfo">\n$r\n</div>';
 		default: return r;
 		}
+	}
+	
+	public static function init() {
+		Code.init();
+		// register node types:
+		var nodeTypes = new Array<NodeType>();
+		DataActions.run(nodeTypes);
+		DataGML.run();
+		DataInfo.run(nodeTypes);
+		NodeEvent.eventTypes = data.DataEvents.get();
+		DataGMX.run(nodeTypes);
+		NodeType.nodeTypes = nodeTypes;
+		NodeType.nodeTypeText = new types.NodeText("@L");
+		NodeType.nodeTypeText.name = "Text";
 	}
 }

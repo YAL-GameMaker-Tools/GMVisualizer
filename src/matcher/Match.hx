@@ -58,6 +58,7 @@ class Match {
 					switch (s.substring(ofs, pos++)) {
 					case "code": nodes.push(MnCode);
 					case "su": nodes.push(MnStringUntil);
+					case "ml": nodes.push(MnMultiline);
 					case "eu":
 						nodes.push(MnExprUntil);
 						if (s.charCodeAt(pos) == " ".code) {
@@ -161,7 +162,7 @@ class Match {
 			} else return null;
 		case MnEOL:
 			add(r.readUntilChar("\n".code));
-		case MnStringUntil:
+		case MnStringUntil, MnMultiline:
 			var s:String = "\n";
 			if (ni + 1 < nn) switch (nodes[ni + 1]) {
 			case MnText(s1): s = s1;
@@ -170,12 +171,13 @@ class Match {
 			var sl = s.length;
 			var c1 = s.charCodeAt(0);
 			var p0 = r.pos;
+			var noML = (node == MnStringUntil);
 			while (r.cond) {
 				var c = r.curr;
 				if (c == c1 && substr(r.pos, sl) == s) {
 					add(r_str.substring(p0, r.pos));
 					break;
-				} else if (c == "\n".code || c == "\r".code) {
+				} else if (noML && (c == "\n".code || c == "\r".code)) {
 					return null;
 				} else r.pos++;
 			}
@@ -242,7 +244,9 @@ class Match {
 			}
 			for (n in nodes) switch (n) {
 			case MnText(s): r += htmlEscape(s);
-			case MnSet(_): r += '<span class="set">' + htmlEscape(next()) + '</span>';
+			case MnSet(_):
+				var s = next();
+				r += '<span class="set">' + htmlEscape(s) + '</span>';
 			case MnNot: if (m.not) r += '<span class="not">not</span> ';
 			case MnRelative: if (m.relative) r += '<span class="relative">relative</span> ';
 			case MnSpaces: r += " ";
@@ -267,7 +271,7 @@ class Match {
 				var s:String = '(' + (c & 255) + ", " + ((c >> 8) & 255) + ", " + (c >> 16) + ')';
 				r += '<span class="colorbox" title="$s" style="background-color:rgb$s">$c</span>';
 			case MnResource: r += '<span class="ri">' + htmlEscape(next()) + '</span>';
-			case MnEOL, MnStringUntil: r += htmlEscape(next());
+			case MnEOL, MnStringUntil, MnMultiline: r += htmlEscape(next());
 			}
 		case OutputMode.OmBB:
 			inline function bbs(s:String, v:String) {
@@ -294,7 +298,7 @@ class Match {
 			case MnColor:
 				r += next();
 			case MnResource: r += bbs("ri", next());
-			case MnEOL, MnStringUntil: r += next();
+			case MnEOL, MnStringUntil, MnMultiline: r += next();
 			}
 		default:
 			for (n in nodes) switch (n) {
@@ -313,7 +317,7 @@ class Match {
 				for (codeNode in codeList) r += Code.print(codeNode, mode);
 			case MnColor: r += next();
 			case MnResource: r += next();
-			case MnEOL, MnStringUntil: r += next();
+			case MnEOL, MnStringUntil, MnMultiline: r += next();
 			}
 		} // switch (mode)
 		return r;

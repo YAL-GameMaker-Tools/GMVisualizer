@@ -1,4 +1,4 @@
-package types;
+package types.code;
 import data.BBStyle;
 
 /**
