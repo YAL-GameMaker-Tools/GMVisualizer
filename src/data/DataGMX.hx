@@ -16,9 +16,9 @@ class DataGMX {
 			var action = NodeAction.iconMap.get(id);
 			if (action == null) trace('No action for $id/$lid.');
 			list.push(new NodeGmxAction("<action>"
-				+ "\n@]<libid>1</libid>"
-				+ "\n@]<id>" + lid + "</id>"
-				+ "\n@]@{ml}</action>",
+				+ "@s<libid>1</libid>"
+				+ "@s<id>" + lid + "</id>"
+				+ "@s@{ml}</action>",
 				action, ord));
 		}
 		function event(type:Int, numb:Int, name:String, icon:Int) {

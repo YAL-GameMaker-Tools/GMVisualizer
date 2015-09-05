@@ -23,6 +23,8 @@ enum MatchNode {
 	MnExprUntil;
 	/// "@]": Soaks up extra spaces after expressions
 	MnSpaces;
+	/// "@s": " \t\r\n"
+	MnWhitespace;
 	/// "@{code}": Mutli-line GML code (spans until the invalid expression)
 	MnCode;
 	/// "@r": Optional "relative ".

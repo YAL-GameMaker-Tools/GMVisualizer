@@ -46,6 +46,7 @@ class Match {
 				case "w".code: nodes.push(MnWith);
 				case "c".code: nodes.push(MnColor);
 				case "]".code: nodes.push(MnSpaces);
+				case "s".code: nodes.push(MnWhitespace);
 				case "e".code:
 					nodes.push(MnExpr);
 					if (s.charCodeAt(pos) == " ".code) {
@@ -104,6 +105,7 @@ class Match {
 			if (substr(r.pos, n) != s) return null;
 			r.pos += n;
 		case MnSpaces: r.readWhileIn(" \t");
+		case MnWhitespace: r.readWhileIn(" \t\r\n");
 		case MnLN:
 			switch (r.curr) {
 			case "\r".code:
@@ -250,6 +252,7 @@ class Match {
 			case MnNot: if (m.not) r += '<span class="not">not</span> ';
 			case MnRelative: if (m.relative) r += '<span class="relative">relative</span> ';
 			case MnSpaces: r += " ";
+			case MnWhitespace: r += "\n";
 			case MnLN: r += "<br>";
 			case MnWith:
 				var m_with = m.with;
@@ -280,6 +283,7 @@ class Match {
 			for (n in nodes) switch (n) {
 			case MnText(s): r += s;
 			case MnSpaces: r += " ";
+			case MnWhitespace: r += "\n";
 			case MnLN: r += "\n";
 			case MnSet(_): r += bbs("set", next());
 			case MnNot: if (m.not) r += bbs("not", "not") + " ";
@@ -304,6 +308,7 @@ class Match {
 			for (n in nodes) switch (n) {
 			case MnText(s): r += s;
 			case MnSpaces: r += " ";
+			case MnWhitespace: r += "\n";
 			case MnLN: r += "\n";
 			case MnSet(_): r += next();
 			case MnNot: r += "not ";
