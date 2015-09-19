@@ -338,7 +338,7 @@ class DataGML {
 			return 'if (instance_number(${vr(m,0)}) ${vcmp(m,1)} ${xs(m,2)})';
 		});
 		addx("Test Chance", function(m) {
-			return 'if (random(${xs(m,1)}) ${m.not ? "<" : ">="} 1)';
+			return 'if (random(${xs(m,0)}) ${m.not ? "<" : ">="} 1)';
 		});
 		add("Check Question", function(m) {
 			return 'if (${xn(m)}show_question("${vs(m,0)}"))';
