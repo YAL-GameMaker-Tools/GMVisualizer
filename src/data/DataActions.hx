@@ -26,12 +26,12 @@ class DataActions {
 			list.push(r = new NodeAction(id(name), code, ico));
 			r.isIndent = true;
 		}
-		list.push(new NodeAction("Unknown Action", "Unknown Action", 008));
+		list.push(new NodeAction("Unknown Action", "Unknown Action", 8));
 		//{ 01_move
 		section = "move";
-		add("Move Fixed", "@wstart moving in directions @e with speed set @rto @e", 000);
-		add("Move Free", "@wset speed @rto @{eu} and direction to @e", 001);
-		add("Move Towards", "@wstart moving @rin the direction of position (@e,@e) with speed @e", 002);
+		add("Move Fixed", "@wstart moving in directions @e with speed set @rto @e", 0);
+		add("Move Free", "@wset speed @rto @{eu} and direction to @e", 1);
+		add("Move Towards", "@wstart moving @rin the direction of position (@e,@e) with speed @e", 2);
 		add("Speed Horizontal", "@wset the horizontal speed @rto @e", 100);
 		add("Speed Vertical", "@wset the vertical speed @rto @e", 101);
 		add("Set Gravity", "@wset the gravity @rto @e in direction @e", 102);
@@ -55,17 +55,16 @@ class DataActions {
 		//}
 		//{ 02_main1
 		section = "main1";
-		add("Create Moving", "@wcreate instance of object @i at @rposition (@e,@e) with speed @e in direction @e", 004);
-		add("Create Instance", "@wcreate instance of object @i at @rposition (@e,@e)", 003);
-		add("Create Random", "@wcreate instance of object @i, @i, @i, or @i at @rposition (@e,@e)", 005);
+		add("Create Moving", "@wcreate instance of object @i at @rposition (@e,@e) with speed @e in direction @e", 4);
+		add("Create Instance", "@wcreate instance of object @i at @rposition (@e,@e)", 3);
+		add("Create Random", "@wcreate instance of object @i, @i, @i, or @i at @rposition (@e,@e)", 5);
 		add("Change Instance", "@wchange the instance into object @i, @[yes|not|no] performing events", 103);
 		add("Destroy Instance", "@wdestroy the instance", 104);
 		add("Destroy at Position", "kill all instances at @rposition (@e,@e)", 105);
 		add("Change Sprite", "@wset the sprite to @i with subimage @{eu} and speed @e", 203);
 		add("Transform Sprite", "@wscale the sprite with @e in the xdir, @e in the ydir, rotate over @e, and @[no mirroring|mirror horizontally|flip vertically|mirror and flip]", 204);
 		add("Color Sprite", "@wblend the sprite with color @c and alpha value @e", 205);
-		add("Play Sound", "@[Play|Loop] sound @i", 303);
-		add("Play Sound", "play sound @i; looping: @[false|true]", 303);
+		add("Play Sound", "play sound @i; looping: @[play|loop]", 303);
 		add("Stop Sound", "stop sound @i", 304);
 		ctl("Check Sound", "if sound @i is @Nplaying", 305);
 		{ // GM<=8.1 room actions
@@ -85,12 +84,12 @@ class DataActions {
 		//}
 		//{ 03_main2
 		section = "main2";
-		add("Set Alarm", "@wset @[Alarm 0|Alarm 1|Alarm 2|Alarm 3|Alarm 4|Alarm 5|Alarm 6|Alarm 7|Alarm 8|Alarm 9|Alarm 10|Alarm 11] @rto @e", 006);
-		add("Sleep", "sleep @e milliseconds; redrawing the screen: @[true|false]", 007);
+		add("Set Alarm", "@wset @[Alarm 0|Alarm 1|Alarm 2|Alarm 3|Alarm 4|Alarm 5|Alarm 6|Alarm 7|Alarm 8|Alarm 9|Alarm 10|Alarm 11] @rto @e", 6);
+		add("Sleep", "sleep @e milliseconds; redrawing the screen: @[true|false]", 7);
 		//
 		add("Set Time Line", "@wset time line @i at position @e, @[Start Immediately|Don't Start] and @[Don't Loop|Loop]", 106);
-		add("Time Line Position", "@wset the time line position @rto @e", 107);
-		add("Time Line Speed", "@wset the speed of the time line @rto @e", 108);
+		add("Time Line Position", "@wset the time line position @rto @e[true|false]", 107);
+		add("Time Line Speed", "@wset the speed of the time line @rto @e[true|false]", 108);
 		add("Start Time Line", "@wstart or resume the current time line", 206);
 		add("Pause Time Line", "@wpause the current time line", 207);
 		add("Stop Time Line", "@wstop and reset the current time line", 208);
@@ -111,14 +110,13 @@ class DataActions {
 		add("Load Game", "load the game from the file @L", 707);
 		//
 		add("Replace Sprite", "replace the sprite @i with the image in file @{su} with @e subimages", 806);
-		add("Replace Sound", "replace the sound @i with the contents of file @L", 807);
 		add("Replace Background", "replace the background @i with the image in file @L", 808);
 		//}
 		//{ 04_control
 		section = "control";
-		ctl("Check Empty", "@wif @rposition (@e,@e) is @Ncollision free for @[Only solid|solid|all] objects", 009);
-		ctl("Check Collision", "@wif @rposition (@e,@e) gives @Na collision with @[Only solid|solid|all] objects", 010);
-		ctl("Check Object", "@wif at @rposition (@e,@e) there is @Nobject @i", 011);
+		ctl("Check Empty", "@wif @rposition (@e,@e) is @Ncollision free for @[Only solid|solid|all] objects", 9);
+		ctl("Check Collision", "@wif @rposition (@e,@e) gives @Na collision with @[Only solid|solid|all] objects", 10);
+		ctl("Check Object", "@wif at @rposition (@e,@e) there is @Nobject @i", 11);
 		ctl("Test Instance Count", "if number of objects @i is @N@[equal to|smaller than|larger than|Equal to|Smaller than|Larger than] @e", 109);
 		ctl("Test Chance", "with a chance of 1 out of @e do @Nperform the next action", 110);
 		// GMS uses a variant with duplicate spaces?:
@@ -137,11 +135,6 @@ class DataActions {
 		add("Call Parent Event", "call the inherited event of the parent object", 411);
 		list.push(new types.code.NodeCodeBlock(id("Execute Code"), "@wexecute code:\n\n@{code}", 509));
 		//{
-		add("Execute Script", "@wexecute script @i with arguments (,,,,)", 510);
-		add("Execute Script", "@wexecute script @i with arguments (@e,,,,)", 510);
-		add("Execute Script", "@wexecute script @i with arguments (@e,@e,,,)", 510);
-		add("Execute Script", "@wexecute script @i with arguments (@e,@e,@e,,)", 510);
-		add("Execute Script", "@wexecute script @i with arguments (@e,@e,@e,@e,)", 510);
 		add("Execute Script", "@wexecute script @i with arguments (@e,@e,@e,@e,@e)", 510);
 		//}
 		list.push(new types.NodeComment(id("Comment"), "COMMENT: @L", 511));
@@ -149,9 +142,9 @@ class DataActions {
 		add("Draw Variable", "@wat @rposition (@e,@e) draw the value of: @e", 611);
 		//}
 		//{ 05_score
-		add("Set Score", "set the score @rto @e", 012);
-		ctl("Test Score", 'if score is @N@[$ncmp] @e', 013);
-		add("Draw Score", "at @rposition (@e,@e) draw the value of score with caption @L", 014);
+		add("Set Score", "set the score @rto @e", 12);
+		ctl("Test Score", 'if score is @N@[$ncmp] @e', 13);
+		add("Draw Score", "at @rposition (@e,@e) draw the value of score with caption @L", 14);
 		add("Show Highscore", "show the highscore table\n"
 			+ "@]background: @i\n"
 			+ "@]@[don't show|show] the border\n"
@@ -171,10 +164,26 @@ class DataActions {
 			+ "@]@[don't show|show] lives with caption @L\n"
 			+ "@]@[don't show|show] health with caption @L", 512);
 		//}
+		//{ 06_extra
+		add("Create Part System", "Create a particle system at drawing depth @i.", 15);
+		add("Part System Destroy", "Destroy particle system.", 16);
+		add("Part System Clear", "Clear particle system of all particles.", 17);
+		add("Part Type Create", "Create particle of type @[type 0|type 1|type 2|type 3|type 4|type 5|type 6|type 7|type 8|type 9|type 10|type 11|type 12|type 13|type 14|type 15], shape of @[pixel|disk|square|line|star|circle|ring|sphere|flare|spark|explosion|cloud|smoke|snow] and sprite @i, with min/max size @e and @e where size increment is @e.", 115);
+		add("Part Type Color", "Set the color of particle type @[type 0|type 1|type 2|type 3|type 4|type 5|type 6|type 7|type 8|type 9|type 10|type 11|type 12|type 13|type 14|type 15] where color mixing is @[mixed|changing] with colors @c and @c and start and end alpha of @e and @e.", 116);
+		add("Part Type Life", "Set the life of particle type @i, with a min and max life of @e and @e.", 117);
+		add("Part Type Speed", "Set the speed of particle type @i, with a min/max speed of @e and @e, min/max direction of @e and @e with a friction of @e.", 215);
+		add("Part Type Gravity", "Set the gravity of particle type @i, with gravity strength of @e and gravity direction of @e.", 216);
+		add("Part Type Secondary", "Tell particle type @i to emit particle type of @i for step count @e with a death particle type of @i and a death count of @e.", 217);
+		add("Create Part Emitter", "Create a particle emittter with an ID of @i, shape of @i and an area defined by vertices (@e,@e) and (@e,@e).", 315);
+		add("Destroy Part Emitter", "Destroy particle emitter with an ID of @i.", 316);
+		add("Emitter Burst", "For emiiter with an ID of @i, burst particles of type @i, with a count of @e.", 317);
+		add("Emitter Stream", "For emitter with an ID of @i, stream particles of type @i, with a count of @e.", 415);
+		add("Draw Cursor", "draw cursor with sprite @i and @[don't show|show] system cursor.", 515);
+		//}
 		//{ 07_draw
-		add("Draw Self", "@wDraw the instance", 020);
-		add("Draw Sprite", "@wat @rposition (@e,@e) draw image @e of sprite @i", 018);
-		add("Draw Background", "at @rposition (@e,@e) draw background @i; tiled: @[true|false]", 019);
+		add("Draw Self", "@wDraw the instance", 20);
+		add("Draw Sprite", "@wat @rposition (@e,@e) draw image @e of sprite @i", 18);
+		add("Draw Background", "at @rposition (@e,@e) draw background @i; tiled: @[true|false]", 19);
 		//
 		add("Draw Text Scaled", "@wat @rposition (@e,@e) draw text: @{su} scaled horizontally with @e, vertically with @e, and rotated over @e degrees", 119);
 		add("Draw Text", "@wat @rposition (@e,@e) draw text: @L", 118);
