@@ -318,7 +318,7 @@ class DataGML {
 		add("Sleep", function(m) return 'sleep(${xs(m,0)});');
 		
 		//timelines
-		add("Set Time Line", function(m) return 'timeline_index = ${vr(m,1)};\ntimeline_position = ${xs(m,2)};\ntimeline_running = ${vr(m,3)};\ntimeline_loop = ${vr(m,4)};');
+		add("Set Time Line", function(m) return 'timeline_index = ${vr(m,0)};\ntimeline_position = ${xs(m,1)};\ntimeline_running = ${vr(m,2)};\ntimeline_loop = ${vr(m,3)};');
 		add("Time Line Position", function(m) {
 			var ai:String = m.values[0];
 			return xrna(m, "timeline_position", m.values[1]) + ';';
@@ -329,7 +329,7 @@ class DataGML {
 		});
 		add("Start Time Line", function(m) return 'timeline_running = true;');
 		add("Pause Time Line", function(m) return 'timeline_running = false;');
-		add("Stop Time Line", function(m) return 'timeline_running = false\ntimeline_position = 0;');
+		add("Stop Time Line", function(m) return 'timeline_running = false;\ntimeline_position = 0;');
 		
 		add("Display Message", function(m) return 'show_message(${ss(vs(m,0))});');
 		add("Show Info", function(_) return 'show_info();');
