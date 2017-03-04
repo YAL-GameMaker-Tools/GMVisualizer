@@ -2,6 +2,8 @@ package data;
 import matcher.MatchResult;
 import types.NodeAction;
 import Code;
+import data.DataGML.DataGMLTools.*;
+using data.DataGML.DataGMLTools;
 /**
  * ...
  * @author YellowAfterlife
@@ -12,7 +14,7 @@ class DataGML {
 		var section:String;
 		var f:MatchResult->String;
 		inline function add(name:String, func:MatchResult->String):Void {
-			NodeAction.actions.get(section + ": " + name).gmlFunc = func;
+			NodeAction.actions[section + ": " + name].gmlFunc = func;
 		}
 		inline function add2(s1:String, s2:String, f1:MatchResult->String) {
 			f = f1;
@@ -24,86 +26,6 @@ class DataGML {
 			NodeAction.actions[section + ": " + s].gmlFunc = f;
 			NodeAction.actions[section + ": " + s + "1"].gmlFunc = f;
 		}
-		//{
-		inline function join(a:String, s:String, b:String) {
-			return (a != "" && b != "") ? a + s + b : a + b;
-		}
-		/// conditional string
-		inline function cs(c:Bool, s:String) return (c ? s : "");
-		/// boolean->string
-		inline function sb(c:Bool) return c ? "true" : "false";
-		/// resource->string
-		function sr(s:String) return s == "<undefined>" ? "-1" : s;
-		/// string->string
-		function ss(s:String) {
-			if (s.indexOf('"') < 0) {
-				return '"$s"';
-			} else if (s.indexOf("'") < 0) {
-				return "'" + s + "'";
-			} else {
-				return '/* $s */';
-			}
-		}
-		
-		//{
-		/// value string
-		inline function vs(m:MatchResult, i:Int):String return m.values[i];
-		/// value boolean
-		inline function vb(m:MatchResult, i:Int, s:String) return sb(m.values[i] == s);
-		/// value resource
-		inline function vr(m:MatchResult, i:Int) return sr(m.values[i]);
-		/// value comparison
-		function vcmp(m:MatchResult, i:Int) {
-			return switch (vs(m, i)) {
-			case "equal to": m.not ? "!=" : "==";
-			case "smaller than", "less than": m.not ? ">=" : "<";
-			case "larger than", "greater than": m.not ? "<=" : ">";
-			case "less than or equal to": m.not ? ">" : "<=";
-			case "greater than or equal to": m.not ? "<" : ">=";
-			default: m.not ? "!?" : "?";
-			}
-		}
-		/// value color (BGR 24-bit)
-		inline function vcol(m:MatchResult, i:Int) {
-			return "$" + StringTools.hex(m.values[i], 6);
-		}
-		inline function vstr(m:MatchResult, i:Int) return ss(vs(m, i));
-		//}
-		
-		/// expression string
-		inline function xs(m:MatchResult, i:Int) {
-			return Code.printNodes(m.values[i], OutputMode.OmGML);
-		}
-		/// expression-value-assign
-		function xva(m:MatchResult, s:String, i:Int) {
-			var x:String = xs(m, i);
-			return x != s ? '$s = $x' : '';
-		}
-		/// expression-relative-number
-		function xrn(m:MatchResult, s:String, i:Int) {
-			var x:String = xs(m, i);
-			if (m.relative) {
-				if (x.charCodeAt(0) == "-".code) {
-					return s + " - " + x.substring(1);
-				} else {
-					return x != "0" ? s + " + " + x : s;
-				}
-			} else {
-				return x;
-			}
-		}
-		/// expression-relative-number-assign
-		function xrna(m:MatchResult, s:String, i:Int) {
-			var x:String = xs(m, i);
-			if (m.relative) {
-				if (x != "0") return '$s += $x';
-			} else {
-				if (x != s) return '$s = $x';
-			}; return "";
-		}
-		
-		inline function xn(m:MatchResult) return m.not ? "!" : "";
-		//}
 		//{ 01_move
 		section = "move";
 		add("Move Fixed", function(m) {
@@ -160,17 +82,17 @@ class DataGML {
 		add("Move Towards", function(m) {
 			return 'move_towards_point(${xrn(m, "x", 0)}, ${xrn(m, "y", 1)}, ${xs(m, 2)});';
 		});
-		add("Speed Horizontal", function(m) return xrna(m, "hspeed", 0) + ';');
-		add("Speed Vertical", function(m) return xrna(m, "vspeed", 0) + ';');
+		add("Speed Horizontal", function(m) return xrna(m, "hspeed", 0).sc());
+		add("Speed Vertical", function(m) return xrna(m, "vspeed", 0).sc());
 		add("Set Gravity", function(m) {
-			return join(xrna(m, "gravity", 0), ";\n", xrna(m, "gravity_direction", 1) + ';');
+			return join(xrna(m, "gravity", 0), ";\n", xrna(m, "gravity_direction", 1)).sc();
 		});
 		add("Reverse Horizontal", function(_) return "hspeed *= -1;");
 		add("Reverse Vertical", function(_) return "vspeed *= -1;");
-		add("Set Friction", function(m) return xrna(m, "friction", 0) + ';');
+		add("Set Friction", function(m) return xrna(m, "friction", 0).sc());
 		//
 		addx("Jump to Position", function(m) {
-			return join(xrna(m, "x", 0), ";\n", xrna(m, "y", 1) + ';');
+			return join(xrna(m, "x", 0), ";\n", xrna(m, "y", 1)).sc();
 		});
 		add("Jump to Start", function(_) return "x = xstart;\ny = ystart;");
 		add("Jump to Random", function(m) {
@@ -213,8 +135,8 @@ class DataGML {
 			return 'path_start($pt, ${xs(m,2)}, $i /* $e */, ${vb(m,3,"absolute")});';
 		});
 		add("End Path", function(m) return "path_end();");
-		add("Path Position", function(m) return xrna(m, "path_position", 0) + ';');
-		add("Path Speed", function(m) return xrna(m, "path_speed", 0) + ';');
+		add("Path Position", function(m) return xrna(m, "path_position", 0).sc());
+		add("Path Speed", function(m) return xrna(m, "path_speed", 0).sc());
 		//
 		add("Step Towards", function(m) {
 			return 'mp_linear_step(${xrn(m,"x",0)}, ${xrn(m,"x",1)}, ${xs(m,2)}, '
@@ -313,7 +235,7 @@ class DataGML {
 		section = "main2";
 		add("Set Alarm", function(m) {
 			var ai:String = m.values[0];
-			return xrna(m, "alarm[" + ai.substring(6) + "]", 1) + ';';
+			return xrna(m, "alarm[" + ai.substring(6) + "]", 1).sc();
 		});
 		add("Sleep", function(m) return 'sleep(${xs(m,0)});');
 		
@@ -321,11 +243,11 @@ class DataGML {
 		add("Set Time Line", function(m) return 'timeline_index = ${vr(m,0)};\ntimeline_position = ${xs(m,1)};\ntimeline_running = ${vr(m,2)};\ntimeline_loop = ${vr(m,3)};');
 		add("Time Line Position", function(m) {
 			var ai:String = m.values[0];
-			return xrna(m, "timeline_position", m.values[1]) + ';';
+			return xrna(m, "timeline_position", m.values[1]).sc();
 		});
 		add("Time Line Speed", function(m) {
 			var ai:String = m.values[0];
-			return xrna(m, "timeline_speed", m.values[1]) + ';';
+			return xrna(m, "timeline_speed", m.values[1]).sc();
 		});
 		add("Start Time Line", function(m) return 'timeline_running = true;');
 		add("Pause Time Line", function(m) return 'timeline_running = false;');
@@ -427,7 +349,7 @@ class DataGML {
 		});
 		//}
 		//{ 05_score
-		add("Set Score", function(m) return xrna(m, "score", 0) + ';');
+		add("Set Score", function(m) return xrna(m, "score", 0).sc());
 		add("Test Score", function(m) return 'if (score ${vcmp(m,0)} ${xs(m,1)})');
 		add("Draw Score", function(m) {
 			return 'draw_text(${xrn(m,"x",0)}, ${xrn(m,"y",1)}, ${vstr(m,2)} + string(score));';
@@ -445,7 +367,7 @@ class DataGML {
 		});
 		add("Clear Highscore", function(m) return "highscore_clear();");
 		//
-		add("Set Lives", function(m) return xrna(m, "lives", 0) + ';');
+		add("Set Lives", function(m) return xrna(m, "lives", 0).sc());
 		add("Test Lives", function(m) return 'if (lives ${vcmp(m,0)} ${xs(m,1)})');
 		add("Draw Lives", function(m) {
 			return 'draw_text(${xrn(m,"x",0)}, ${xrn(m,"y",1)}, ${vstr(m,2)} + string(lives));';
@@ -454,7 +376,7 @@ class DataGML {
 			return 'action_draw_life_images(${xrn(m,"x",0)}, ${xrn(m,"y",1)}, ${vr(m,2)});';
 		});
 		//
-		add("Set Health", function(m) return xrna(m, "health", 0) + ';');
+		add("Set Health", function(m) return xrna(m, "health", 0).sc());
 		add("Test Health", function(m) return 'if (health ${vcmp(m,0)} ${xs(m,1)})');
 		add("Draw Health", function(m) {
 			var s = 'draw_healthbar(${xrn(m,"x",0)}, ${xrn(m,"y",1)},'
@@ -650,4 +572,92 @@ class DataGML {
 		});
 		//}
 	}
+}
+
+class DataGMLTools {
+	//{
+	/// appends a semicolon to `s` if non-empty
+	public static function sc(s:String) {
+		return s != "" ? s + ";" : s;
+	}
+	/// separates `a` and `b` by `s` if both are non-empty
+	public static function join(a:String, s:String, b:String) {
+		return (a != "" && b != "") ? a + s + b : a + b;
+	}
+	/// conditional string
+	public static inline function cs(c:Bool, s:String) return (c ? s : "");
+	/// boolean->string
+	public static inline function sb(c:Bool) return c ? "true" : "false";
+	/// resource->string
+	public static function sr(s:String) return s == "<undefined>" ? "-1" : s;
+	/// string->string
+	public static function ss(s:String) {
+		if (s.indexOf('"') < 0) {
+			return '"$s"';
+		} else if (s.indexOf("'") < 0) {
+			return "'" + s + "'";
+		} else {
+			return '/* $s */';
+		}
+	}
+	
+	//{
+	/// value string
+	public static inline function vs(m:MatchResult, i:Int):String return m.values[i];
+	/// value boolean
+	public static inline function vb(m:MatchResult, i:Int, s:String) return sb(m.values[i] == s);
+	/// value resource
+	public static inline function vr(m:MatchResult, i:Int) return sr(m.values[i]);
+	/// value comparison
+	public static function vcmp(m:MatchResult, i:Int) {
+		return switch (vs(m, i)) {
+		case "equal to": m.not ? "!=" : "==";
+		case "smaller than", "less than": m.not ? ">=" : "<";
+		case "larger than", "greater than": m.not ? "<=" : ">";
+		case "less than or equal to": m.not ? ">" : "<=";
+		case "greater than or equal to": m.not ? "<" : ">=";
+		default: m.not ? "!?" : "?";
+		}
+	}
+	/// value color (BGR 24-bit)
+	public static inline function vcol(m:MatchResult, i:Int) {
+		return "$" + StringTools.hex(m.values[i], 6);
+	}
+	public static inline function vstr(m:MatchResult, i:Int) return ss(vs(m, i));
+	//}
+	
+	/// expression string
+	public static inline function xs(m:MatchResult, index:Int) {
+		return Code.printNodes(m.values[index], OutputMode.OmGML);
+	}
+	/// expression-value-assign
+	public static function xva(m:MatchResult, s:String, index:Int) {
+		var x:String = xs(m, index);
+		return x != s ? '$s = $x' : '';
+	}
+	/// expression-relative-number
+	public static function xrn(m:MatchResult, s:String, index:Int) {
+		var x:String = xs(m, index);
+		if (m.relative) {
+			if (x.charCodeAt(0) == "-".code) {
+				return s + " - " + x.substring(1);
+			} else {
+				return x != "0" ? s + " + " + x : s;
+			}
+		} else {
+			return x;
+		}
+	}
+	/// expression-relative-number-assign
+	public static function xrna(m:MatchResult, s:String, index:Int) {
+		var x:String = xs(m, index);
+		if (m.relative) {
+			if (x != "0") return '$s += $x';
+		} else {
+			if (x != s) return '$s = $x';
+		}; return "";
+	}
+	
+	public static inline function xn(m:MatchResult) return m.not ? "!" : "";
+	//}
 }
