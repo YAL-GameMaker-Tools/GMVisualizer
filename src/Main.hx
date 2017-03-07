@@ -2,6 +2,9 @@ package;
 
 import js.Browser;
 import js.html.DivElement;
+import js.html.DragEvent;
+import js.html.Event;
+import js.html.FileReader;
 import js.html.InputElement;
 import js.html.TextAreaElement;
 import js.html.UListElement;
@@ -186,6 +189,26 @@ class Main {
 		//
 		load();
 		//
+		(function() {
+			function cancelDefault(e:Event) {
+				e.preventDefault();
+				return false;
+			}
+			Browser.document.body.addEventListener("dragover", cancelDefault);
+			Browser.document.body.addEventListener("dragenter", cancelDefault);
+			Browser.document.body.addEventListener("drop", function(e:DragEvent) {
+				e.preventDefault();
+				var dt = e.dataTransfer;
+				for (file in dt.files) {
+					var reader = new FileReader();
+					reader.onloadend = function(_) {
+						source.value = reader.result;
+					};
+					reader.readAsText(file);
+				}
+				return false;
+			});
+		})();
 		// auto-test:
 		if (source.value != "") btHTMLm.onclick(null);
 	}
