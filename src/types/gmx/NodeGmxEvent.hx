@@ -24,21 +24,47 @@ class NodeGmxEvent extends NodeEvent {
 		info.readString(xml);
 		node.extra = mt;
 		node.nodes = info.nodes;
-		node.match = { };
+		//node.match = { };
 		return node;
 	}
 	override public function printText(v:Node, mode:OutputMode):String {
 		return text;
 	}
-	/*override public function print(v:Node, mode:OutputMode):String {
-		var r = super.print(v, mode);
-		var values = v.match.values;
-		var xml = values[values.length - 1];
-		var info = Info.fromString(xml);
-		r += "\n";
-		r += Info.printNodes(info.nodes, mode, 1);
-		return r;
-	}*/
+	override public function print(v:Node, mode:OutputMode):String {
+		switch (mode) {
+			case OutputMode.OmGmxGml: {
+				var vals = v.match.values;
+				var last = vals.length - 1;
+				var prev = vals[last];
+				vals[last] = ''
+				+ '\n      <action>'
+				+ '\n        <libid>1</libid>'
+				+ '\n        <id>603</id>'
+				+ '\n        <kind>7</kind>'
+				+ '\n        <userelative>0</userelative>'
+				+ '\n        <isquestion>0</isquestion>'
+				+ '\n        <useapplyto>-1</useapplyto>'
+				+ '\n        <exetype>2</exetype>'
+				+ '\n        <functionname></functionname>'
+				+ '\n        <codestring></codestring>'
+				+ '\n        <whoName>self</whoName>'
+				+ '\n        <relative>0</relative>'
+				+ '\n        <isnot>0</isnot>'
+				+ '\n        <arguments>'
+				+ '\n          <argument>'
+				+ '\n            <kind>1</kind>'
+				+ '\n            <string>' + Info.printNodes(v.nodes, OutputMode.OmGML, 0) + '</string>'
+				+ '\n          </argument>'
+				+ '\n        </arguments>'
+				+ '\n      </action>'
+				+ '\n    ';
+				var r = super.printText(v, mode);
+				vals[last] = prev;
+				return r;
+			};
+			default: return super.print(v, mode);
+		}
+	}
 }
 
 class NodeGmxCollisionEvent extends NodeGmxEvent {

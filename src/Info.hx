@@ -193,7 +193,7 @@ class Info {
 				}
 				if (Conf.bbIndentMode == Conf.bbIndentModeList) r += '$ln[/list]';
 			};
-			case OutputMode.OmGML: {
+			case OutputMode.OmGML, OmGmxGml: {
 				ln = "\n";
 				var last:Node = null;
 				var indentMode = Conf.gmlIndentMode;
@@ -281,7 +281,9 @@ class Info {
 						r += prefix + s;
 						if (first) first = false;
 					}
-					if (node.nodes != null && node.nodes.length > 0) {
+					// todo: augment print() calls instead?
+					if (mode != OutputMode.OmGmxGml
+					&& node.nodes != null && node.nodes.length > 0) {
 						r += ln + "execute code:" + ln;
 						r += ln + printNodes(node.nodes, mode, tabc + 1);
 					}
