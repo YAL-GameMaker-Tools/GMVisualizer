@@ -29,9 +29,17 @@ class DataGMX {
 			match += '">@{ml}</event>';
 			events.push(new NodeGmxEvent(match, icon, name));
 		}
+		list.push(new NodeGmxComment());
 		//{ Events
 		event(0, 0, "Create Event", 0);
+		event(1, 0, "Destroy Event", 1);
+		event(3, 0, "Step Event", 3);
+		event(7, 7, "Other Event: Animation End", 4);
+		for (i in 0 ... 12) event(2, i, 'Alarm Event for alarm $i', 2);
 		for (i in 0 ... 16) event(7, 10 + i, "Other Event: User Defined " + i, 4);
+		events.push(new NodeGmxCollisionEvent(
+			'<event eventtype="4" ename="@{su}">@{ml}</event>',
+			6, ""));
 		events.push(new NodeGmxEventAny(
 			'<event eventtype="@{su}" enumb="@{su}">@{ml}</event>',
 			4, ""));
@@ -170,6 +178,7 @@ class DataGMX {
 		add(618, 802, "0*"); // Take Snapshot
 		add(619, 532, "3[small|medium|large]0[explosion|ring|ellipse|firework|smoke|smoke up|star|spark|flare|cloud|rain|snow]1e2e4*5[below objects|above objects]"); // Create Effect
 		//}
-		list.push(new NodeGmxObject("<object>@{ml}<PhysicsObject>@{ml}</object>"));
+		list.push(new NodeGmxObject("<object>@{ml}<events/>@{ml}</object>", -1));
+		list.push(new NodeGmxObject("<object>@{ml}<events>@{ml}</events>@{ml}</object>", 1));
 	}
 }

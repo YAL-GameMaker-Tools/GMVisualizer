@@ -12,7 +12,7 @@ class DataEvents {
 			events.push(new NodeEvent(id, icon));
 		}
 		add("Create Event:", 0);
-		add("Destroy Event:", 0);
+		add("Destroy Event:", 1);
 		for (i in 0 ... 12) add('Alarm Event for alarm $i:', 2);
 		add("Begin Step Event:", 3);
 		add("Step Event:", 3);
@@ -49,6 +49,7 @@ class DataEvents {
 			"Animation End", "End Of Path", "Close Button"]) {
 			add('Other Event: $s:', 4);
 		}
+		add("Unknown Event (@{su}:@{su}):", 4);
 		return events;
 	}
 }

@@ -8,10 +8,17 @@ import types.*;
  */
 class Info {
 	public var nodes:Array<Node>;
+	
+	/** Whether to "unpack" single-action branches from begin/end blocks. */
 	public var optPostFix:Bool = true;
+	
+	/** Whether to detect open/close blocks based on indentation changes. */ 
+	public var optIndent:Bool = true;
+	
 	public function new() {
 		nodes = [];
 	}
+	
 	static function postfix(list:Array<Node>) {
 		var i = list.length;
 		while (--i >= 0) {
@@ -27,6 +34,7 @@ class Info {
 			if (node.nodes != null) postfix(node.nodes);
 		}
 	}
+	
 	public function read(s:StringReader) {
 		var i:Int, n:Int;
 		var atl = NodeType.nodeTypes;
@@ -39,7 +47,7 @@ class Info {
 		var atOpen = types.NodeOpen.inst;
 		var atClose = types.NodeClose.inst;
 		inline function unindent() {
-			while (next < tabs) {
+			if (optIndent) while (next < tabs) {
 				var acb = new Node(atClose);
 				acb.indent = tabs;
 				list.push(acb);
@@ -70,20 +78,23 @@ class Info {
 				} else break;
 			}
 			if (action != null) {
-				if (next > tabs) {
-					var d = next - tabs;
-					if (!action.type.isIndent || d > 1)
-					while (--d >= 0) {
-						var acb = new Node(atOpen);
-						var acp = list.length - d;
-						list.insert(acp, acb);
-						for (i in acp ... list.length) list[i].indent++;
-						tabs++;
-						acb.indent = tabs;
-					}
-				} else if (next < tabs) unindent();
+				if (optIndent) {
+					if (next > tabs) {
+						var d = next - tabs;
+						if (!action.type.isIndent || d > 1)
+						while (--d >= 0) {
+							var acb = new Node(atOpen);
+							var acp = list.length - d;
+							list.insert(acp, acb);
+							for (i in acp ... list.length) list[i].indent++;
+							tabs++;
+							acb.indent = tabs;
+						}
+					} else if (next < tabs) unindent();
+				} else if (action.type == atClose) tabs--;
 				action.indent = tabs;
 				list.push(action);
+				if (!optIndent && action.type == atOpen) tabs++;
 			} else { // no action
 				var event:Node = null;
 				i = 0; while (i < etc) {

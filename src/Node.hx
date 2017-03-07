@@ -13,6 +13,9 @@ class Node {
 	public var indent:Int = 0;
 	/// child nodes (for event type)
 	public var nodes:Array<Node>;
+	/// purpose-specific data
+	public var extra:Any = null;
+	
 	public function new(type:NodeType, ?match:MatchResult) {
 		this.type = type;
 		if (match != null) {
