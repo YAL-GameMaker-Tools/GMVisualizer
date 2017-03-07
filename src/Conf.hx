@@ -60,6 +60,18 @@ package;
 		while (--n >= 0) r += gmlIndentString;
 		return r;
 	}
-	static var gmlIndentMode:Int = 1;
+	static var gmlIndentMode:GmlIndentMode = KNR;
 	//}
+}
+@:enum abstract GmlIndentMode(Int) from Int to Int {
+	
+	/** Allman, brace-on-new-line */
+	var BSD = 0;
+	
+	/** K&R, brace-on-same-line*/
+	var KNR = 1;
+	
+	/** Whitesmiths, brace-on-new-line-indented */
+	var WSM = 2;
+	
 }

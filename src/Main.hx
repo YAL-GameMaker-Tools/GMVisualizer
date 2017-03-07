@@ -189,7 +189,7 @@ class Main {
 		//
 		load();
 		//
-		(function() {
+		(function allowFileDragAndDrop() {
 			function cancelDefault(e:Event) {
 				e.preventDefault();
 				return false;
@@ -210,7 +210,7 @@ class Main {
 			});
 		})();
 		// auto-test:
-		if (source.value != "") btHTMLm.onclick(null);
+		if (source.value != "") btGML.onclick(null);
 	}
 	static function main() {
 		Info.init();

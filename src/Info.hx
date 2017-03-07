@@ -1,6 +1,7 @@
 package;
 import data.*;
 import types.*;
+using StringTools;
 
 /**
  * ...
@@ -162,106 +163,134 @@ class Info {
 		var r:String = "", first:Bool = true, ln:String;
 		if (nodes.length == 0) return r;
 		switch (mode) {
-		case OutputMode.OmHTML:
-			ln = StringTools.rpad("\n", "\t", tabc + 1);
-			for (node in nodes) {
-				if (first) first = false; else r += ln;
-				if (node.nodes == null) {
-					r += node.type.print(node, mode);
-				} else {
-					r += '<div class="event"><p>'
-						+ ln + '\t' + node.type.print(node, mode)
-					+ ln + '</p><ul>'
-						+ ln + '\t' + printNodes(node.nodes, mode, tabc + 1)
-					+ ln + '</ul></div>';
-				}
-			}
-		case OutputMode.OmBB:
-			ln = "\n";
-			if (Conf.bbIndentMode == Conf.bbIndentModeList) r += '[list]$ln';
-			for (node in nodes) {
-				if (first) first = false; else r += ln;
-				if (node.nodes == null) {
-					r += Conf.bbGetIndent(node.indent);
-					r += BBStyle.get("node", node.type.print(node, mode));
-				} else {
-					r += BBStyle.get("event p", node.type.print(node, mode))
-					+ ln + BBStyle.get("event ul", printNodes(node.nodes, mode, tabc + 1));
-				}
-			}
-			if (Conf.bbIndentMode == Conf.bbIndentModeList) r += '$ln[/list]';
-		case OutputMode.OmGML:
-			ln = "\n";
-			var last:Node = null;
-			var indentMode:Int = Conf.gmlIndentMode;
-			var index:Int = -1;
-			while (++index < nodes.length) {
-				var node:Node = nodes[index];
-				var indentLevel:Int = node.indent;
-				var concat:Bool = false;
-				var result:String = null;
-				switch (node.name) {
-				case "control: Start Block":
-					if (indentMode == 1 && last != null && last.type.isIndent) {
-						concat = true;
-					} else if (indentMode != 2) indentLevel--;
-				case "control: End Block":
-					if (indentMode != 2) indentLevel--;
-				case "control: Else":
-					if (indentMode == 1 && last != null && last.name == "control: End Block") {
-						concat = true;
+			case OutputMode.OmHTML: {
+				ln = StringTools.rpad("\n", "\t", tabc + 1);
+				for (node in nodes) {
+					if (first) first = false; else r += ln;
+					if (node.nodes == null) {
+						r += node.type.print(node, mode);
+					} else {
+						r += '<div class="event"><p>'
+							+ ln + '\t' + node.type.print(node, mode)
+						+ ln + '</p><ul>'
+							+ ln + '\t' + printNodes(node.nodes, mode, tabc + 1)
+						+ ln + '</ul></div>';
 					}
-				default:
-					if (node.isIndent && last != null) {
-						if (last.isIndent && node.match.with != null) {
-							var i:Int = index;
-							var brackets:Int = 0;
-							var loop:Bool = true;
-							while (loop && i < nodes.length) {
-								switch (nodes[i].name) {
-								case "control: Start Block": brackets++;
-								case "control: End Block":
-									if (--brackets == 0) {
-										if (i + 1 < nodes.length
-										&& nodes[i + 1].name == "control: Else") {
-											
-										} else loop = false;
-									}
-								} // switch (nodes[i].name)
-								i++;
-							} // while (i < nodes.length)
-							var acb:Node;
-							acb = new Node(NodeOpen.inst); acb.indent = node.indent;
-							nodes.insert(index, acb);
-							acb = new Node(NodeClose.inst); acb.indent = node.indent;
-							nodes.insert(i + 1, acb);
-							i += 2; while (--i >= index) nodes[i].indent++;
-							index -= 1;
-							continue;
-						} else if (last.type.name == "control: Else") {
-							concat = true;
-						}
-					} // if (node.isIndent && last != null)
-				} // switch (node.name)
-				var indent:String = Conf.gmlGetIndent(indentLevel);
-				var prefix:String = concat ? " " : (first ? "" : ln) + indent;
-				var s = result != null ? result : node.type.print(node, mode);
-				var sl = s.length;
-				//if (sl > 0 && s.charCodeAt(sl - 1) == "\n".code) s = s.substring(0, sl - 1);
-				if (s.length > 0) {
-					s = StringTools.replace(s, "\n", "\n" + indent);
-					r += prefix + s;
-					if (first) first = false;
 				}
-				if (node.nodes != null && node.nodes.length > 0) {
-					r += ln + "execute code:" + ln;
-					r += ln + printNodes(node.nodes, mode, tabc + 1);
+			};
+			case OutputMode.OmBB: {
+				ln = "\n";
+				if (Conf.bbIndentMode == Conf.bbIndentModeList) r += '[list]$ln';
+				for (node in nodes) {
+					if (first) first = false; else r += ln;
+					if (node.nodes == null) {
+						r += Conf.bbGetIndent(node.indent);
+						r += BBStyle.get("node", node.type.print(node, mode));
+					} else {
+						r += BBStyle.get("event p", node.type.print(node, mode))
+						+ ln + BBStyle.get("event ul", printNodes(node.nodes, mode, tabc + 1));
+					}
 				}
-				//
-				last = node;
-			}
-		default:
-		}
+				if (Conf.bbIndentMode == Conf.bbIndentModeList) r += '$ln[/list]';
+			};
+			case OutputMode.OmGML: {
+				ln = "\n";
+				var last:Node = null;
+				var indentMode = Conf.gmlIndentMode;
+				var index:Int = -1;
+				while (++index < nodes.length) {
+					var node:Node = nodes[index];
+					var indentLevel:Int = node.indent;
+					var concat:Bool = false;
+					var result:String = null;
+					switch (node.name) {
+						case "control: Start Block": {
+							if (indentMode == KNR && last != null && last.type.isIndent) {
+								// `if ()\n{` -> `if () {`
+								concat = true;
+							} else if (indentMode != WSM) indentLevel--;
+						};
+						case "control: End Block": {
+							if (indentMode != WSM) indentLevel--;
+						};
+						case "control: Else": {
+							if (indentMode == KNR && last != null && (
+								last.name == "control: End Block"
+								|| r.fastCodeAt(r.length - 1) == "}".code
+							)) {
+								// `}\nelse` -> `} else`
+								concat = true;
+							}
+						};
+						default: {
+							if (node.isIndent && last != null) {
+								if (last.isIndent && node.match.with != null) {
+									// with-if expressions have to be surrounded by btackets.
+									var i:Int = index;
+									var brackets:Int = 0;
+									var loop:Bool = true;
+									while (loop && i < nodes.length) {
+										switch (nodes[i].name) {
+										case "control: Start Block": brackets++;
+										case "control: End Block":
+											if (--brackets == 0) {
+												if (i + 1 < nodes.length
+												&& nodes[i + 1].name == "control: Else") {
+													//
+												} else loop = false;
+											}
+										} // switch (nodes[i].name)
+										i++;
+									} // while (i < nodes.length)
+									var acb:Node;
+									acb = new Node(NodeOpen.inst); acb.indent = node.indent;
+									nodes.insert(index, acb);
+									acb = new Node(NodeClose.inst); acb.indent = node.indent;
+									nodes.insert(i + 1, acb);
+									i += 2; while (--i >= index) nodes[i].indent++;
+									index -= 1;
+									continue;
+								} else if (last.type.name == "control: Else") {
+									// `else\nif` -> `else if`
+									concat = true;
+								}
+							} // if (node.isIndent && last != null)
+							else if (last != null && last.isIndent) {
+								result = node.type.print(node, mode);
+								if (result.indexOf("\n") >= 0 || (
+									indentMode == KNR
+									//&& index + 1 < nodes.length
+									//&& nodes[index + 1].type.name == "control: Else"
+								)) {
+									concat = indentMode == KNR;
+									var tab = Conf.gmlIndentString;
+									result = "{\n" + tab
+										+ result.replace("\n", "\n" + tab)
+										+ "\n}";
+								}
+							}
+						}; // default
+					} // switch (node.name)
+					var indent:String = Conf.gmlGetIndent(indentLevel);
+					var prefix:String = concat ? " " : (first ? "" : ln) + indent;
+					var s = result != null ? result : node.type.print(node, mode);
+					var sl = s.length;
+					//if (sl > 0 && s.charCodeAt(sl - 1) == "\n".code) s = s.substring(0, sl - 1);
+					if (s.length > 0) {
+						s = StringTools.replace(s, "\n", "\n" + indent);
+						r += prefix + s;
+						if (first) first = false;
+					}
+					if (node.nodes != null && node.nodes.length > 0) {
+						r += ln + "execute code:" + ln;
+						r += ln + printNodes(node.nodes, mode, tabc + 1);
+					}
+					//
+					last = node;
+				}
+			}; // case OmGML
+			default:
+		} // switch (mode)
 		return r;
 	}
 	public function print(mode:OutputMode):String {
