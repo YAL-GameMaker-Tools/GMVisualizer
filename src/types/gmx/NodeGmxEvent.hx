@@ -36,6 +36,7 @@ class NodeGmxEvent extends NodeEvent {
 				var vals = v.match.values;
 				var last = vals.length - 1;
 				var prev = vals[last];
+				var gml = Info.printNodes(v.nodes, OutputMode.OmGML, 0);
 				vals[last] = ''
 				+ '\n      <action>'
 				+ '\n        <libid>1</libid>'
@@ -53,7 +54,7 @@ class NodeGmxEvent extends NodeEvent {
 				+ '\n        <arguments>'
 				+ '\n          <argument>'
 				+ '\n            <kind>1</kind>'
-				+ '\n            <string>' + Info.printNodes(v.nodes, OutputMode.OmGML, 0) + '</string>'
+				+ '\n            <string>' + StringTools.htmlEscape(gml) + '</string>'
 				+ '\n          </argument>'
 				+ '\n        </arguments>'
 				+ '\n      </action>'

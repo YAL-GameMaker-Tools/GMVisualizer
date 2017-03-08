@@ -12,6 +12,7 @@ class DNDtoGML {
 		var args = Sys.args();
 		//
 		var quiet = false;
+		var output = true;
 		inline function exit(code:Int) {
 			if (!quiet) {
 				Sys.println("Press any key to exit.");
@@ -22,8 +23,8 @@ class DNDtoGML {
 		}
 		//
 		var i = args.length;
-		while (--i >= 0) switch (args[i]) {
-			case "/Q", "/q": quiet = true; args.splice(i, 1);
+		while (--i >= 0) switch (args[i].toLowerCase()) {
+			case "/q": quiet = true; args.splice(i, 1);
 			default: 
 		}
 		var path = args.shift();
@@ -52,19 +53,39 @@ class DNDtoGML {
 		}
 		//
 		var obj0 = Path.join([path, "objects@" + DateTools.format(Date.now(), "%Y-%m-%d_%H-%M-%S")]);
-		FileSystem.createDirectory(obj0);
+		if (output) FileSystem.createDirectory(obj0);
 		//
 		Info.init();
+		// read "use new audio system" setting from config:
+		var cfg = Path.join([path, "Configs", "Default.config.gmx"]);
+		if (FileSystem.exists(cfg)) try {
+			var xmlRoot = Xml.parse(File.getContent(cfg));
+			for (xmlConfig in xmlRoot.elementsNamed("Config")) {
+				for (xmlOptions in xmlConfig.elementsNamed("Options")) {
+					for (xmlAudio in xmlOptions.elementsNamed("option_use_new_audio")) {
+						switch (xmlAudio.firstChild().toString().toLowerCase()) {
+							case "0", "false": Conf.gmlNewAudio = false;
+							default: Conf.gmlNewAudio = true;
+						}
+					}
+				}
+			}
+		} catch (_:Dynamic) {
+			//
+		}
 		//
 		for (lp in FileSystem.readDirectory(obj1)) {
 			if (StringTools.endsWith(lp.toLowerCase(), ".object.gmx")) {
 				var op = '$obj1/$lp';
-				File.copy(op, '$obj0/$lp');
+				if (output) File.copy(op, '$obj0/$lp');
+				var gmx0 = File.getContent(op);
+				//
 				var inf = new Info();
 				inf.optPostFix = false;
-				var gmx = File.getContent(op);
-				inf.readString(gmx);
-				File.saveContent(op, inf.print(OutputMode.OmGmxGml));
+				inf.readString(gmx0);
+				var gmx1 = inf.print(OutputMode.OmGmxGml);
+				//
+				if (output) File.saveContent(op, gmx1);
 			}
 		}
 		//

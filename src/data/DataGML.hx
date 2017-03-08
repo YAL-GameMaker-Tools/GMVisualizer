@@ -159,35 +159,28 @@ class DataGML {
 				+'\nnewinst.direction = ${xs(m,4)};';
 		});
 		add("Create Random", function(m) {
-			var s = 'instance_create(${xrn(m,"x",4)}, ${xrn(m,"y",5)}, ';
-			var i:Int;
-			var args:Array<String> = [];
-			var argc:Int = 0;
-			var argf:Int = -1;
-			var arg:String;
-			i = 0; while (i < 4) {
-				arg = vr(m, i);
-				if (arg != "-1" && ++argc == 1) argf = i;
-				args[i++] = arg;
-			}
-			if (argc == 0) return "";
-			if (argc == 1) return s + args[argf] + ")";
-			s += "choose(";
-			i = 0; while (i < 4) {
-				arg = args[i];
-				if (arg != "-1") {
-					if (i != argf) s += ", ";
-					s += arg;
+			var found = 0;
+			var choose = "";
+			for (i in 0 ... 4) {
+				var obj = vr(m, i);
+				switch (obj) {
+					case "-1", "-100": { };
+					default: {
+						if (found > 0) choose += ", ";
+						choose += obj;
+						found += 1;
+					};
 				}
-				i++;
 			}
-			return s + "));";
+			if (found == 0) return ""; // not a valid action
+			if (found > 1) choose = "choose(" + choose + ")";
+			return 'instance_create(${xrn(m,"x",4)}, ${xrn(m,"y",5)}, $choose);';
 		});
 		add("Change Instance", function(m) return 'instance_change(${vr(m,0)}, ${vb(m,1,"yes")});');
 		add("Destroy Instance", function(_) return "instance_destroy();");
 		add("Destroy at Position", function(m) {
-			//return 'action_kill_position(${xrn(m,"x",0)}, ${xrn(m,"y",1)})';
-			return 'if (position_meeting(${xrn(m,"x",0)},${xrn(m,"y",1)},id)) { instance_destroy(); }';
+			return 'action_kill_position(${xrn(m,"x",0)}, ${xrn(m,"y",1)})';
+			//return 'if (position_meeting(${xrn(m,"x",0)},${xrn(m,"y",1)},id)) { instance_destroy(); }';
 		});
 		add("Change Sprite", function(m) {
 			return 'sprite_index = ${vr(m,0)};'
@@ -198,9 +191,9 @@ class DataGML {
 			var x = xs(m, 0);
 			var y = xs(m, 1);
 			switch (vs(m, 3)) {
-			case "mirror horizontally": x = "-" + x;
-			case "flip vertically": y = "-" + y;
-			case "mirror and flip": x = "-" + x; y = "-" + y;
+				case "mirror horizontally": x = "-" + x;
+				case "flip vertically": y = "-" + y;
+				case "mirror and flip": x = "-" + x; y = "-" + y;
 			}
 			if (StringTools.startsWith(x, "--")) x = x.substring(2);
 			if (StringTools.startsWith(y, "--")) y = y.substring(2);
@@ -214,14 +207,24 @@ class DataGML {
 		});
 		//
 		add("Play Sound", function(m) {
-			if ( vb(m,1,"loop") == "true" ) {
-				return 'sound_loop(${vr(m,0)});';
+			var sound = vr(m, 0);
+			var loop = (vb(m, 1, "loop") == "true");
+			if (Conf.gmlNewAudio) {
+				return 'audio_play_sound($sound, 0, $loop);';
 			} else {
-				return 'sound_play(${vr(m,0)});';
+				return 'sound_${loop?"loop":"play"}($sound);';
 			}
 		});
-		add("Stop Sound", function(m) return 'sound_stop(${vr(m,0)});');
-		add("Check Sound", function(m) return 'if (${xn(m)}sound_isplaying(${vr(m,0)}))');
+		add("Stop Sound", function(m) {
+			var sound = vr(m, 0);
+			if (Conf.gmlNewAudio) {
+				return 'audio_stop_sound($sound);';
+			} else return 'sound_stop($sound);';
+		});
+		add("Check Sound", function(m) {
+			var fn = (Conf.gmlNewAudio ? "audio_is_playing" : "sound_isplaying");
+			return 'if (${xn(m)}$fn(${vr(m,0)}))';
+		});
 		// todo: pre-GMS transition actions
 		add("Previous Room1", function(_) return 'room_goto_previous();');
 		add("Next Room1", function(_) return 'room_goto_next();');
@@ -240,7 +243,12 @@ class DataGML {
 		add("Sleep", function(m) return 'sleep(${xs(m,0)});');
 		
 		//timelines
-		add("Set Time Line", function(m) return 'timeline_index = ${vr(m,0)};\ntimeline_position = ${xs(m,1)};\ntimeline_running = ${vr(m,2)};\ntimeline_loop = ${vr(m,3)};');
+		add("Set Time Line", function(m) {
+			return 'timeline_index = ${vr(m,0)};'
+				+'\ntimeline_position = ${xs(m,1)};'
+				+'\ntimeline_running = ${vr(m,2)};'
+				+'\ntimeline_loop = ${vr(m,3)};';
+		});
 		add("Time Line Position", function(m) {
 			var ai:String = m.values[0];
 			return xrna(m, "timeline_position", m.values[1]).sc();
@@ -251,8 +259,11 @@ class DataGML {
 		});
 		add("Start Time Line", function(m) return 'timeline_running = true;');
 		add("Pause Time Line", function(m) return 'timeline_running = false;');
-		add("Stop Time Line", function(m) return 'timeline_running = false;\ntimeline_position = 0;');
-		
+		add("Stop Time Line", function(m) {
+			return 'timeline_running = false;'
+				+'\ntimeline_position = 0;';
+		});
+		//
 		add("Display Message", function(m) return 'show_message(${ss(vs(m,0))});');
 		add("Show Info", function(_) return 'show_info();');
 		add("Open URL", function(m) return 'url_open(${vstr(m,0)});');
@@ -284,7 +295,7 @@ class DataGML {
 			return 'if (instance_number(${vr(m,0)}) ${vcmp(m,1)} ${xs(m,2)})';
 		});
 		addx("Test Chance", function(m) {
-			return 'if (random(${xs(m,0)}) ${m.not ? "<" : ">="} 1)';
+			return 'if (random(${xs(m,0)}) ${m.not ? ">=" : "<"} 1)';
 		});
 		add("Check Question", function(m) {
 			return 'if (${xn(m)}show_question("${vs(m,0)}"))';
@@ -294,10 +305,10 @@ class DataGML {
 		add("Check Mouse", function(m) {
 			var s = 'if (${xn(m)}mouse_check_button(';
 			s += switch (vs(m, 0)) {
-			case "no": "mb_none";
-			case "right": "mb_right";
-			case "middle": "mb_middle";
-			default: "mb_left";
+				case "no": "mb_none";
+				case "right": "mb_right";
+				case "middle": "mb_middle";
+				default: "mb_left";
 			}
 			return s + '))';
 		});

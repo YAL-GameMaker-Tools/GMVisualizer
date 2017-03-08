@@ -61,6 +61,7 @@ package;
 		return r;
 	}
 	static var gmlIndentMode:GmlIndentMode = KNR;
+	static var gmlNewAudio:Bool = false;
 	//}
 }
 @:enum abstract GmlIndentMode(Int) from Int to Int {
