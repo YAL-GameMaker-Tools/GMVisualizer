@@ -2,6 +2,8 @@ package app;
 import haxe.io.Path;
 import sys.FileSystem;
 import sys.io.File;
+import types.gmx.NodeGmxAction.dndCounter;
+import types.NodeAction.gmlCounter;
 
 /**
  * ...
@@ -56,6 +58,8 @@ class DNDtoGML {
 		if (output) FileSystem.createDirectory(obj0);
 		//
 		Info.init();
+		dndCounter = 0;
+		gmlCounter = 0;
 		// read "use new audio system" setting from config:
 		var cfg = Path.join([path, "Configs", "Default.config.gmx"]);
 		if (FileSystem.exists(cfg)) try {
@@ -89,7 +93,8 @@ class DNDtoGML {
 			}
 		}
 		//
-		return 0;
+		Sys.println("Converted " + dndCounter + " DnD blocks into " + gmlCounter + " lines of GML.");
+		return exit(0);
 		/*var path = Sys.args()[0];
 		if (path == null) {
 			Sys.println("Use: 

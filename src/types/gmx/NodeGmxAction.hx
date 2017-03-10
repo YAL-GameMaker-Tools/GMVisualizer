@@ -10,6 +10,7 @@ using StringTools;
 class NodeGmxAction extends NodeType {
 	public var action:NodeAction;
 	public var arguments:String;
+	public static var dndCounter:Int = 0;
 	public function new(code:String, node:NodeAction, args:String) {
 		super(code);
 		action = node;
@@ -33,6 +34,7 @@ class NodeGmxAction extends NodeType {
 			if (with != "self") m.with = with;
 		}
 		var meta = arguments;
+		if (meta != "0E") dndCounter++;
 		seek = "<arguments>";
 		pos = xml.indexOf(seek);
 		if (meta != null && pos >= 0) {

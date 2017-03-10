@@ -8,6 +8,7 @@ import matcher.*;
 class NodeAction extends NodeType {
 	public static var actions:Map<String, NodeAction> = new Map();
 	public static var iconMap:Map<Int, NodeAction> = new Map();
+	public static var gmlCounter:Int = -1;
 	public var iconId:Int;
 	public var iconCol:Int;
 	public var iconRow:Int;
@@ -106,6 +107,7 @@ class NodeAction extends NodeType {
 							} else s = 'with ($r_with) $s';
 						}
 					}
+					if (gmlCounter >= 0) gmlCounter += s.split("\n").length + 1;
 					s = StringTools.replace(s, "\t", Conf.gmlIndentString);
 					return s;
 				} else {

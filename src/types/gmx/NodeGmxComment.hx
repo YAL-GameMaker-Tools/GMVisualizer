@@ -9,6 +9,11 @@ class NodeGmxComment extends NodeType {
 		super("<!--@{ml}-->");
 	}
 	override public function print(v:Node, mode:OutputMode):String {
-		return "";
+		switch (mode) {
+			case OutputMode.OmGmxGml: {
+				return super.print(v, mode);
+			};
+			default: return "";
+		}
 	}
 }
