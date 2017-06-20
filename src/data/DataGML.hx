@@ -31,8 +31,9 @@ class DataGML {
 		add("Move Fixed", function(m) {
 			var c:CodeNode = m.values[0][0];
 			var s:String;
+			var op = octx(m, []);
 			switch (c) {
-			case CoNumber(d, _) if (d.length == 9):
+			case CoNumber(d, _) if (d.length == 9): {
 				inline function dc(i:Int):Bool {
 					return (d.charCodeAt(i) == "1".code);
 				}
@@ -42,17 +43,17 @@ class DataGML {
 				if (n == 0) return "";
 				var dcx = dc(4);
 				if (dcx) {
-					if (n == 1) return "speed = 0;\ndirection = 0;";
+					if (n == 1) return '${op}speed = 0;\n${op}direction = 0;';
 					s = xrna(m, "speed", 1);
 					if (s != "") s += ";\n\t";
 					s = 'if (random($n) < 1) {\n\tspeed = 0;\n\tdirection = 0;\n} else {\n\t$s';
 					n--;
 				} else {
-					s = xrna(m, "speed", 1);
+					s = xrna(m, "${op}speed", 1);
 					if (s != "") s += ";\n";
 				}
 				if (n > 1) {
-					s += "direction = choose(";
+					s += "${op}direction = choose(";
 					n = 0; i = -1;
 					while (++i < 9) if (i != 4 && dc(i)) {
 						if (++n > 1) s += ", ";
@@ -61,11 +62,12 @@ class DataGML {
 					s += ");";
 				} else {
 					i = -1; while (++i < 9) if (i != 4 && dc(i)) {
-						s += "direction = " + moveFixedDirs[i];
+						s += "${op}direction = " + moveFixedDirs[i];
 					}
 				}
 				if (dcx) s += ";\n}";
 				return s;
+			};
 			default:
 			}
 			// this fallback should not ever trigger under normal conditions.
@@ -92,17 +94,25 @@ class DataGML {
 		add("Set Friction", function(m) return xrna(m, "friction", 0).sc());
 		//
 		addx("Jump to Position", function(m) {
-			return join(xrna(m, "x", 0), ";\n", xrna(m, "y", 1)).sc();
+			var op = octx(m, [0, 1]);
+			return join(xrna(m, op + "x", 0), ";\n", xrna(m, op + "y", 1)).sc();
 		});
-		add("Jump to Start", function(_) return "x = xstart;\ny = ystart;");
+		add("Jump to Start", function(m) {
+			var op = octx(m, []);
+			return  '${op}x = ${op}xstart;'
+				+ '\n${op}x = ${op}ystart;';
+		});
 		add("Jump to Random", function(m) {
 			return "action_move_random(" + xs(m, 0) + ", " + xs(m, 1) + ");";
 		});
 		//
 		add("Align to Grid", function(m) {
 			//return "action_snap(" + xs(m, 0) + ", " + xs(m, 1) + ")";
-			return 'x = floor(x/${xs(m,0)}) * ${xs(m,0)};'
-				+ '\ny = floor(x/${xs(m,1)}) * ${xs(m,1)};';
+			var op = octx(m, [0, 1]);
+			var gx = xs(m, 0);
+			var gy = xs(m, 1);
+			return  '${op}x = floor(${op}x / $gx) * $gx;'
+				+ '\n${op}y = floor(${op}y / $gy) * $gy;';
 		});
 		add("Wrap Screen", function(m) {
 			var s = vs(m, 0);
@@ -150,13 +160,16 @@ class DataGML {
 		//{ 02_main1
 		section = "main1";
 		add("Create Instance", function(m) {
-			return 'instance_create(${xrn(m,"x",1)}, ${xrn(m,"y",2)}, ${vr(m,0)});';
+			var op = octx(m, [1, 2]);
+			var ox = xrn(m, op + "x", 1);
+			var oy = xrn(m, op + "y", 2);
+			return 'instance_create($ox, $oy, ${vr(m,0)});';
 		});
 		add("Create Moving", function(m) {
-			return 'var newinst;'
-				+'\nnewinst = instance_create(${xrn(m,"x",1)}, ${xrn(m,"y",2)}, ${vr(m,0)});'
-				+'\nnewinst.speed = ${xs(m,3)};'
-				+'\nnewinst.direction = ${xs(m,4)};';
+			return 'var __newinst__;'
+				+'\n__newinst__ = instance_create(${xrn(m,"x",1)}, ${xrn(m,"y",2)}, ${vr(m,0)});'
+				+'\n__newinst__.speed = ${xs(m,3)};'
+				+'\n__newinst__.direction = ${xs(m,4)};';
 		});
 		add("Create Random", function(m) {
 			var found = 0;
@@ -174,18 +187,25 @@ class DataGML {
 			}
 			if (found == 0) return ""; // not a valid action
 			if (found > 1) choose = "choose(" + choose + ")";
-			return 'instance_create(${xrn(m,"x",4)}, ${xrn(m,"y",5)}, $choose);';
+			var op = octx(m, [4, 5]);
+			var ox = xrn(m, op + "x", 4);
+			var oy = xrn(m, op + "y", 5);
+			return 'instance_create($ox, $oy, $choose);';
 		});
 		add("Change Instance", function(m) return 'instance_change(${vr(m,0)}, ${vb(m,1,"yes")});');
 		add("Destroy Instance", function(_) return "instance_destroy();");
 		add("Destroy at Position", function(m) {
-			return 'action_kill_position(${xrn(m,"x",0)}, ${xrn(m,"y",1)})';
+			var op = octx(m, [4, 5]);
+			var ox = xrn(m, op + "x", 0);
+			var oy = xrn(m, op + "y", 1);
+			return 'action_kill_position($ox, $oy)';
 			//return 'if (position_meeting(${xrn(m,"x",0)},${xrn(m,"y",1)},id)) { instance_destroy(); }';
 		});
 		add("Change Sprite", function(m) {
-			return 'sprite_index = ${vr(m,0)};'
-				+'\n${xva(m,"image_index",1)};'
-				+'\n${xva(m,"image_speed",2)};';
+			var op = octx(m, [0, 1, 2]);
+			return  '${op}sprite_index = ${vr(m,0)};'
+				+ '\n${xva(m,op+"image_index",1)};'
+				+ '\n${xva(m,op+"image_speed",2)};';
 		});
 		add("Transform Sprite", function(m) {
 			var x = xs(m, 0);
@@ -197,13 +217,15 @@ class DataGML {
 			}
 			if (StringTools.startsWith(x, "--")) x = x.substring(2);
 			if (StringTools.startsWith(y, "--")) y = y.substring(2);
-			return 'image_xscale = $x;'
-				+'\nimage_yscale = $y;'
-				+'\nimage_angle = ${xs(m,2)};';
+			var op = octx(m, [0, 1, 2]);
+			return '${op}image_xscale = $x;'
+				+'\n${op}image_yscale = $y;'
+				+'\n${op}image_angle = ${xs(m,2)};';
 		});
 		add("Color Sprite", function(m) {
-			return 'image_blend = ${vcol(m,0)};'
-				+'\nimage_alpha = ${xs(m,1)};';
+			var op = octx(m, [1]);
+			return '${op}image_blend = ${vcol(m,0)};'
+				+'\n${op}image_alpha = ${xs(m,1)};';
 		});
 		//
 		add("Play Sound", function(m) {
@@ -238,30 +260,35 @@ class DataGML {
 		section = "main2";
 		add("Set Alarm", function(m) {
 			var ai:String = m.values[0];
-			return xrna(m, "alarm[" + ai.substring(6) + "]", 1).sc();
+			var op = octx(m, [1]);
+			return xrna(m, op + "alarm[" + ai.substring(6) + "]", 1).sc();
 		});
 		add("Sleep", function(m) return 'sleep(${xs(m,0)});');
 		
 		//timelines
 		add("Set Time Line", function(m) {
-			return 'timeline_index = ${vr(m,0)};'
-				+'\ntimeline_position = ${xs(m,1)};'
-				+'\ntimeline_running = ${vr(m,2)};'
-				+'\ntimeline_loop = ${vr(m,3)};';
+			var op = octx(m, [0, 1, 2, 3]);
+			return '${op}timeline_index = ${vr(m,0)};'
+				+'\n${op}timeline_position = ${xs(m,1)};'
+				+'\n${op}timeline_running = ${vr(m,2)};'
+				+'\n${op}timeline_loop = ${vr(m,3)};';
 		});
 		add("Time Line Position", function(m) {
 			var ai:String = m.values[0];
-			return xrna(m, "timeline_position", m.values[1]).sc();
+			return xrna(m, octx(m, [1]) + "timeline_position", m.values[1]).sc();
 		});
 		add("Time Line Speed", function(m) {
 			var ai:String = m.values[0];
-			return xrna(m, "timeline_speed", m.values[1]).sc();
+			return xrna(m, octx(m, [1]) + "timeline_speed", m.values[1]).sc();
 		});
-		add("Start Time Line", function(m) return 'timeline_running = true;');
+		add("Start Time Line", function(m) {
+			return octx(m, []) + 'timeline_running = true;';
+		});
 		add("Pause Time Line", function(m) return 'timeline_running = false;');
 		add("Stop Time Line", function(m) {
-			return 'timeline_running = false;'
-				+'\ntimeline_position = 0;';
+			var op = octx(m, []);
+			return '${op}timeline_running = false;'
+				+'\n${op}timeline_position = 0;';
 		});
 		//
 		add("Display Message", function(m) return 'show_message(${ss(vs(m,0))});');
@@ -313,7 +340,10 @@ class DataGML {
 			return s + '))';
 		});
 		add("Check Grid", function(m) {
-			return 'if (x == (floor(x/${xs(m,0)}) * ${xs(m,0)}) && y == (floor(x/${xs(m,1)}) * ${xs(m,1)}))';
+			var op = octx(m, [0, 1]);
+			var gx = xs(m, 0);
+			var gy = xs(m, 1);
+			return 'if (${op}x == (floor(x/$gx) * $gx) && ${op}y == (floor(x/$gy) * $gy))';
 		});
 		//
 		add("Start Block", function(_) return "{");
@@ -350,10 +380,12 @@ class DataGML {
 		add("Comment", function(m) return "// " + m.values[0]);
 		//
 		add("Set Variable", function(m) {
-			return xs(m, 0) + " " + cs(m.relative, "+") + "= " + xs(m, 1) + ';';
+			var op = octx(m, [1]);
+			return '$op${xs(m,0)} ${cs(m.relative, "+")}= ${xs(m,1)};';
 		});
 		add("Test Variable", function(m) {
-			return 'if (${xs(m, 0)} ${vcmp(m, 1)} ${xs(m, 2)})';
+			var op = octx(m, [2]); // not checking expr#0 because it's the variable to check
+			return 'if ($op${xs(m, 0)} ${vcmp(m, 1)} ${xs(m, 2)})';
 		});
 		add("Draw Variable", function(m) {
 			return 'draw_text(${xrn(m,"x",0)}, ${xrn(m,"y",1)}, ${xs(m,2)});';
@@ -586,7 +618,6 @@ class DataGML {
 }
 
 class DataGMLTools {
-	//{
 	/// appends a semicolon to `s` if non-empty
 	public static function sc(s:String) {
 		return s != "" ? s + ";" : s;
@@ -670,5 +701,30 @@ class DataGMLTools {
 	}
 	
 	public static inline function xn(m:MatchResult) return m.not ? "!" : "";
-	//}
+	
+	public static function octx(m:MatchResult, w:Array<Int>) {
+		if (m.with != "other") return "";
+		for (i in w) {
+			var cc:Array<CodeNode> = m.values[i];
+			for (c in cc) switch (c) {
+				case CoWord(s, t): {
+					switch (t) {
+						case CwStdSpec: {
+							switch (s) {
+								case "self", "other": return "";
+								default:
+							}
+						};
+						case CwStdVar: if (Code.isInst[s]) return "";
+						case CwStdFunc: return ""; // can have side-effects
+						case CwUserVar: return ""; // variables apply to `self` by default
+						case CwUserFunc: return ""; // scripts may depend on context
+						default:
+					}
+				};
+				default: { };
+			}
+		}
+		return "other/* apply to */.";
+	}
 }

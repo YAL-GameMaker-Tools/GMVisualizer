@@ -86,6 +86,7 @@ class NodeAction extends NodeType {
 			default: return "";
 		}
 	}
+	private static var rxApplyToOther = ~/other\/\* apply to \*\/\./g;
 	public function printText(v:Node, mode:OutputMode):String {
 		switch (mode) {
 			case OutputMode.OmGML: {
@@ -94,17 +95,21 @@ class NodeAction extends NodeType {
 					var s = gmlFunc(r);
 					var r_with = r.with;
 					if (r_with != null && s != "") {
-						if (v.type.isIndent) {
-							s = 'var ifwith; ifwith = false'
-							+ '\nwith ($r_with) $s { ifwith = true; break }'
-							+ '\nif (ifwith)';
+						if (r_with == "other" && s.indexOf("other/* apply to */.") >= 0) {
+							s = rxApplyToOther.replace(s, "other.");
 						} else {
-							if (s.indexOf("\n") >= 0) {
-								s = StringTools.replace(s, "\n", "\n\t");
-								s = 'with ($r_with) {\n\t$s\n}';
-							} else if (s.indexOf(";") >= 0) {
-								s = 'with ($r_with) { $s }';
-							} else s = 'with ($r_with) $s';
+							if (v.type.isIndent) {
+								s = 'var ifwith; ifwith = false;'
+								+ '\nwith ($r_with) $s { ifwith = true; break; }'
+								+ '\nif (ifwith)';
+							} else {
+								if (s.indexOf("\n") >= 0) {
+									s = StringTools.replace(s, "\n", "\n\t");
+									s = 'with ($r_with) {\n\t$s\n}';
+								} else if (s.indexOf(";") >= 0) {
+									s = 'with ($r_with) { $s }';
+								} else s = 'with ($r_with) $s';
+							}
 						}
 					}
 					if (gmlCounter >= 0) gmlCounter += s.split("\n").length + 1;

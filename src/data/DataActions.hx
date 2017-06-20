@@ -206,6 +206,7 @@ class DataActions {
 		add("Create Effect", "@wcreate a @[small|medium|large] effect of type @[explosion|ring|ellipse|firework|smoke|smoke up|star|spark|flare|cloud|rain|snow] @rat (@e,@e) of@]color @c @[below objects|above objects]", 619);
 		//}
 		//{ low priority
+		section = "control";
 		ctl("Test Variable", '@wif @e is @N@[$ncmp] @e', 610);
 		//}
 		//{ non-standard

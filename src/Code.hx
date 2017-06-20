@@ -7,6 +7,7 @@ package;
 class Code {
 	public static var isFunc:Map<String, Bool>;
 	public static var isVar:Map<String, Bool>;
+	public static var isInst:Map<String, Bool>;
 	public static var isStd:Map<String, Bool>;
 	public static var resPfx:Array<String> = [];
 	public static var end:String = null;
@@ -18,8 +19,14 @@ class Code {
 		for (s in t) m[s] = true;
 		//
 		isVar = m = new Map();
-		t = data.BuiltinVariables.get().split("|");
+		isInst = new Map();
+		t = data.BuiltinVariables.global().split("|");
 		for (s in t) m[s] = true;
+		t = data.BuiltinVariables.instance().split("|");
+		for (s in t) {
+			m[s] = true;
+			isInst[s] = true;
+		}
 		t = data.BuiltInConstants.get().split("|");
 		for (s in t) m[s] = true;
 		//
