@@ -299,7 +299,8 @@ class Info {
 		var r = printNodes(nodes, mode, 0);
 		switch (mode) {
 		case OmHTML:
-			return '<div class="gminfo">\n$r\n</div>';
+			if (nodes.length > 1) r = '\n$r\n';
+			return '<div class="gminfo">$r</div>';
 		default: return r;
 		}
 	}

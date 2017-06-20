@@ -31,7 +31,7 @@ class NodeCode extends NodeAction {
 	override public function printText(v:Node, mode:OutputMode):String {
 		var r:String = printCode(v.match.values[0], v, mode);
 		return switch (mode) {
-		case OmHTML: '<pre class="code mono">$r</pre>';
+		case OmHTML: '<pre class="code mono">\n$r\n</pre>';
 		default: r;
 		}
 	}
