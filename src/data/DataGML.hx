@@ -353,7 +353,7 @@ class DataGML {
 		add("Repeat", function(m) return "repeat (" + xs(m, 0) + ")");
 		add("Call Parent Event", function(m) return "event_inherited();");
 		//
-		add("Execute Code", function(m) return xs(m, 0) + ';');
+		add("Execute Code", function(m) return xs(m, 0));
 		//{
 		add("Execute Script", function(m) {
 			var arg1 = xs(m, 1).length == 0;
