@@ -10,7 +10,11 @@ class Node {
 	/// matched values
 	public var match:MatchResult;
 	/// indentation level
-	public var indent:Int = 0;
+	public var indent(default, set):Int = 0;
+	private function set_indent(v) {
+		indent = v;
+		return v;
+	}
 	/// child nodes (for event type)
 	public var nodes:Array<Node>;
 	/// purpose-specific data

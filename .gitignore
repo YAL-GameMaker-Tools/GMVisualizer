@@ -1,7 +1,7 @@
 # Primary script:
 bin/*/script.js
 # Packaged icons and stylesheet:
-bin/*.zip
+bin/*/*.zip
 #
 bin/img/*.png
 #

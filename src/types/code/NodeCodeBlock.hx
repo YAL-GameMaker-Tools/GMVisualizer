@@ -19,4 +19,12 @@ class NodeCodeBlock extends NodeCode {
 		default: return r;
 		}
 	}
+	#if (dnd_to_gml)
+	override public function print(v:Node, mode:OutputMode):String {
+		switch (mode) {
+			case OmHTML: return super.printText(v, mode);
+			default: return super.print(v, mode);
+		}
+	}
+	#end
 }

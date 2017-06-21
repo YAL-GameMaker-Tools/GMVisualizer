@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8"/>
+	<title>DnD to GML</title>
+	<meta name="description" content="" />
+	<link rel="stylesheet" type="text/css" href="gmvisualizer.css" />
+<style type="text/css">
+	body {
+		font: 15px sans-serif;
+		background: #fdfdfd;
+		margin: 0;
+		min-height: 100%;
+		min-height: 100vh;
+		overflow-y: scroll;
+	}
+	h1 {
+		margin: 0;
+	}
+	#wrapper {
+		width: 100%;
+		padding: 8px;
+	}
+	p {
+		margin: 0;
+	}
+	p + p {
+		margin-top: 8px;
+	}
+	textarea, input[type=text], hr, .conf {
+		border: 1px solid #d0d0d0;
+		box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	}
+	textarea, input[type=text], hr {
+		margin: 0;
+	}
+	input[type="button"], textarea {
+		margin: 0;
+		margin-top: 4px;
+	}
+	textarea, input[type=text] {
+		width: 95%;
+		width: calc(100% - 10px);
+		min-width: calc(100% - 10px);
+		background: white;
+		padding: 4px !important;
+		font: 11px Consolas, monospace;
+	}
+	hr {
+		margin: 2px 0;
+		border-style: solid none none none;
+	}
+	.conf {
+		background: white;
+		padding: 4px;
+	}
+	.conf > p {
+		padding-left: 0;
+	}
+	.conf ul {
+		list-style: none;
+		margin: 0;
+		border-left: 3px solid #dfdfdf;
+		padding-left: 4px;
+		border-radius: 3px;
+	}
+	abbr {
+		border-bottom: 1px dotted #666;
+		cursor: help;
+	}
+	.about {
+		text-align: center;
+		margin: 4px 0;
+	}
+	textarea {
+		height: 100px;
+		resize: none;
+	}
+	#options {
+		overflow: hidden;
+	}
+	#options * {
+		vertical-align: middle;
+	}
+	#picker {
+		width: calc(100% - 105px);
+		margin-right: 5px;
+	}
+	#codestyle {
+		width: 100px;
+		box-sizing: border-box;
+	}
+</style>
+</head>
+<body><table id="wrapper"><tr height="0" id="options">
+	<td width="50%">
+		<input type="file" id="picker" accept=".object.gmx" /><select id="codestyle">
+			<option selected>Allman (braces on new lines)</option>
+			<option>1TBS (braces on same lines)</option>
+			<option>Whitesmiths (braces indented)</option>
+		</select>
+	</td><td width="50%">
+		<span style="float: right">
+			<span>by</span> <a href="https://yal.cc">YellowAfterlife</a>
+		</span>
+		<a href="#" id="saver" target="_blank">Save output</a>
+		&middot;
+		<a href="https://yellowafterlife.itch.io/dnd-to-gml">Offline/multi-file version</a>
+		&middot;
+		<a href="https://yellowafterlife.itch.io/dnd-to-gml/">Donate</a>
+	</td>
+</tr><tr height="100">
+	<td>
+		<textarea id="source" placeholder="Paste contents of an .object.gmx here (or use the file picker)"></textarea>
+	</td><td>
+		<textarea id="out_text" placeholder="Converted GMX will be displayed here."></textarea>
+	</td>
+</tr><tr>
+	<td colspan="2">
+		<div id="out_html">
+			<div class="gminfo">
+				Visualization of converted object will be displayed here.
+			</div>
+		</div>
+	</td><td>
+	</td>
+</tr></table>
+	<script src="script.js" type="text/javascript"></script>
+	<!-- stats and such -->
+	<script type="text/javascript">var _gaq = _gaq||[];_gaq.push(['_setAccount','UA-36439133-1']);_gaq.push(['_trackPageview']);</script>
+	<script type="text/javascript" async="true" src="http://www.google-analytics.com/ga.js"></script>
+</body>

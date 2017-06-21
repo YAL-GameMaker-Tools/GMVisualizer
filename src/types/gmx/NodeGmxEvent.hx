@@ -36,7 +36,10 @@ class NodeGmxEvent extends NodeEvent {
 				var vals = v.match.values;
 				var last = vals.length - 1;
 				var prev = vals[last];
+				var _gmx = Info.isGMX;
+				Info.isGMX = true;
 				var gml = Info.printNodes(v.nodes, OutputMode.OmGML, 0);
+				Info.isGMX = _gmx;
 				vals[last] = ''
 				+ '\n      <action>'
 				+ '\n        <libid>1</libid>'

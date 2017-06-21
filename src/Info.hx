@@ -159,6 +159,7 @@ class Info {
 		r.readString(s);
 		return r;
 	}
+	public static var isGMX:Bool = false;
 	public static function printNodes(nodes:Array<Node>, mode:OutputMode, tabc:Int):String {
 		var r:String = "", first:Bool = true, ln:String;
 		if (nodes.length == 0) return r;
@@ -208,10 +209,18 @@ class Info {
 							if (indentMode == KNR && last != null && last.type.isIndent) {
 								// `if ()\n{` -> `if () {`
 								concat = true;
-							} else if (indentMode != WSM) indentLevel--;
+							} else if (isGMX) {
+								if (indentMode == WSM) indentLevel++;
+							} else {
+								if (indentMode != WSM) indentLevel--;
+							}
 						};
 						case "control: End Block": {
-							if (indentMode != WSM) indentLevel--;
+							if (isGMX) {
+								if (indentMode == WSM) indentLevel++;
+							} else {
+								if (indentMode != WSM) indentLevel--;
+							}
 						};
 						case "control: Else": {
 							if (indentMode == KNR && last != null && (
@@ -225,7 +234,7 @@ class Info {
 						default: {
 							if (node.isIndent && last != null) {
 								if (last.isIndent && node.match.with != null) {
-									// with-if expressions have to be surrounded by btackets.
+									// with-if expressions have to be surrounded by brackets.
 									var i:Int = index;
 									var brackets:Int = 0;
 									var loop:Bool = true;
@@ -274,6 +283,7 @@ class Info {
 					var indent:String = Conf.gmlGetIndent(indentLevel);
 					var prefix:String = concat ? " " : (first ? "" : ln) + indent;
 					var s = result != null ? result : node.type.print(node, mode);
+					if (s.length < 200) trace(indentLevel, s);
 					var sl = s.length;
 					//if (sl > 0 && s.charCodeAt(sl - 1) == "\n".code) s = s.substring(0, sl - 1);
 					if (s.length > 0) {
