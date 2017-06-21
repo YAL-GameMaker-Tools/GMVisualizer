@@ -1,9 +1,7 @@
 # Primary script:
-bin/script.js
+bin/*/script.js
 # Packaged icons and stylesheet:
-bin/pkg.zip
-# Minified CSS:
-bin/gmvisualizer.min.css
+bin/*.zip
 #
 bin/img/*.png
 #
