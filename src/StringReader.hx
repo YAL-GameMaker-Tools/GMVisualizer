@@ -13,7 +13,7 @@ class StringReader {
 	public var len:Int;
 	/// Charcode of the current symbol
 	public var curr(get, never):Int;
-	inline function get_curr() return str.charCodeAt(pos);
+	inline function get_curr() return StringTools.fastCodeAt(str, pos);
 	/// Whether end of inupt has been reached yet
 	public var eof(get, never):Bool;
 	inline function get_eof() return pos >= len;
