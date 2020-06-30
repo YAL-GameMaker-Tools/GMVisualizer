@@ -670,16 +670,20 @@ class DataGMLTools {
 	public static inline function vstr(m:MatchResult, i:Int) return ss(vs(m, i));
 	//}
 	
-	/// expression string
+	/** expression string */
 	public static inline function xs(m:MatchResult, index:Int) {
 		return Code.printNodes(m.values[index], OutputMode.OmGML);
 	}
-	/// expression-value-assign
+	
+	/** expression-value-assign */
 	public static function xva(m:MatchResult, s:String, index:Int) {
 		var x:String = xs(m, index);
 		return x != s ? '$s = $x' : '';
 	}
-	/// expression-relative-number
+	
+	/**
+	 * expression-relative-number
+	 */
 	public static function xrn(m:MatchResult, s:String, index:Int) {
 		var x:String = xs(m, index);
 		if (m.relative) {
@@ -692,7 +696,10 @@ class DataGMLTools {
 			return x;
 		}
 	}
-	/// expression-relative-number-assign
+	
+	/**
+	 * expression-relative-number-assign
+	 */
 	public static function xrna(m:MatchResult, s:String, index:Int) {
 		var x:String = xs(m, index);
 		if (m.relative) {
@@ -702,11 +709,13 @@ class DataGMLTools {
 		}; return "";
 	}
 	
+	/** Expression-not: returns "!" or "" based on not-flag */
 	public static inline function xn(m:MatchResult) return m.not ? "!" : "";
 	
-	public static function octx(m:MatchResult, w:Array<Int>) {
+	/** Returns an other-prefix for apply-to if needed. */
+	public static function octx(m:MatchResult, valueIndexes:Array<Int>) {
 		if (m.with != "other") return "";
-		for (i in w) {
+		for (i in valueIndexes) {
 			var cc:Array<CodeNode> = m.values[i];
 			for (c in cc) switch (c) {
 				case CoWord(s, t): {

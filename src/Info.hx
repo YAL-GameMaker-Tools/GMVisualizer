@@ -283,7 +283,7 @@ class Info {
 					var indent:String = Conf.gmlGetIndent(indentLevel);
 					var prefix:String = concat ? " " : (first ? "" : ln) + indent;
 					var s = result != null ? result : node.type.print(node, mode);
-					if (s.length < 200) trace(indentLevel, s);
+					//if (s.length < 200) trace(indentLevel, s);
 					var sl = s.length;
 					//if (sl > 0 && s.charCodeAt(sl - 1) == "\n".code) s = s.substring(0, sl - 1);
 					if (s.length > 0) {
