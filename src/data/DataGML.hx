@@ -149,11 +149,11 @@ class DataGML {
 		add("Path Speed", function(m) return xrna(m, "path_speed", 0).sc());
 		//
 		add("Step Towards", function(m) {
-			return 'mp_linear_step(${xrn(m,"x",0)}, ${xrn(m,"x",1)}, ${xs(m,2)}, '
+			return 'mp_linear_step(${xrn(m,"x",0)}, ${xrn(m,"y",1)}, ${xs(m,2)}, '
 				+ vb(m, 3, "all instances") + ");";
 		});
 		add("Step Avoiding", function(m) {
-			return 'mp_potential_step(${xrn(m,"x",0)}, ${xrn(m,"x",1)}, ${xs(m,2)}, '
+			return 'mp_potential_step(${xrn(m,"x",0)}, ${xrn(m,"y",1)}, ${xs(m,2)}, '
 				+ vb(m, 3, "all instances") + ");";
 		});
 		//}
@@ -268,10 +268,12 @@ class DataGML {
 		//timelines
 		add("Set Time Line", function(m) {
 			var op = octx(m, [0, 1, 2, 3]);
+			var tlRun = m.values[2] == "Start Immediately";
+			var tlLoop = m.values[3] == "Loop";
 			return '${op}timeline_index = ${vr(m,0)};'
 				+'\n${op}timeline_position = ${xs(m,1)};'
-				+'\n${op}timeline_running = ${vr(m,2)};'
-				+'\n${op}timeline_loop = ${vr(m,3)};';
+				+'\n${op}timeline_running = $tlRun;'
+				+'\n${op}timeline_loop = $tlLoop;';
 		});
 		add("Time Line Position", function(m) {
 			var ai:String = m.values[0];
