@@ -3,6 +3,7 @@ package;
 import js.Browser;
 import js.html.DivElement;
 import js.html.DragEvent;
+import js.html.Element;
 import js.html.Event;
 import js.html.FileReader;
 import js.html.InputElement;
@@ -17,8 +18,8 @@ import types.NodeEvent;
  */
 
 class Main {
-	inline function findId(id:String):Dynamic {
-		return Browser.document.getElementById(id);
+	inline function findId<T:Element>(id:String, ?c:Class<T>):T {
+		return cast Browser.document.getElementById(id);
 	}
 	//
 	var btHTMLc:InputElement;
@@ -120,7 +121,7 @@ class Main {
 		regSection("bb_section");
 		regSection("gml_section");
 		// buttons:
-		findId("print_clear").onclick = function(_) {
+		findId("print_clear", InputElement).onclick = function(_) {
 			outHTML.innerHTML = outText.value = "";
 		};
 		btHTMLm = findId("print_html_m");

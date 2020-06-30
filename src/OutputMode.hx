@@ -3,10 +3,10 @@ package;
 /**
  * @author YellowAfterlife
  */
-@:fakeEnum(Int) enum OutputMode {
-	OmHTML;
-	OmBB;
-	OmGML;
-	OmText;
-	OmGmxGml;
+enum abstract OutputMode(Int) {
+	var OmHTML;
+	var OmBB;
+	var OmGML;
+	var OmText;
+	var OmGmxGml;
 }
