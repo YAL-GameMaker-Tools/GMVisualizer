@@ -26,6 +26,7 @@ class Main {
 	var btHTMLm:InputElement;
 	var btBB:InputElement;
 	var btGML:InputElement;
+	var btGMXGML:InputElement;
 	var source:TextAreaElement;
 	var outText:TextAreaElement;
 	var outHTML:DivElement;
@@ -173,6 +174,7 @@ class Main {
 			outText.value = b1;
 			outHTML.innerHTML = inf.print(OutputMode.OmHTML);
 		};
+		//
 		btGML = findId("print_gml");
 		btGML.onclick = function(_) {
 			update();
@@ -187,6 +189,15 @@ class Main {
 			var inf2 = Info.fromString(gml);
 			outHTML.innerHTML = inf2.print(OutputMode.OmHTML);
 		}
+		//
+		btGMXGML = findId("print_gmxgml");
+		btGMXGML.onclick = function(_) {
+			update();
+			var inf = new Info();
+			inf.optPostFix = false; // dont cut single-action brackets (for now)
+			inf.readString(source.value);
+			outText.value = inf.print(OutputMode.OmGmxGml);
+		};
 		//
 		load();
 		//
