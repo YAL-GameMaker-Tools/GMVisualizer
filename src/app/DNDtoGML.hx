@@ -27,6 +27,7 @@ class DNDtoGML {
 		var i = args.length;
 		while (--i >= 0) switch (args[i].toLowerCase()) {
 			case "/q": quiet = true; args.splice(i, 1);
+			case "/dryrun": output = false; args.splice(i, 1);
 			default: 
 		}
 		var path = args.shift();
