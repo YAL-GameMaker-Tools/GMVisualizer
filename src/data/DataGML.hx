@@ -49,11 +49,11 @@ class DataGML {
 					s = 'if (random($n) < 1) {\n\tspeed = 0;\n\tdirection = 0;\n} else {\n\t$s';
 					n--;
 				} else {
-					s = xrna(m, "${op}speed", 1);
+					s = xrna(m, '${op}speed', 1);
 					if (s != "") s += ";\n";
 				}
 				if (n > 1) {
-					s += "${op}direction = choose(";
+					s += '${op}direction = choose(';
 					n = 0; i = -1;
 					while (++i < 9) if (i != 4 && dc(i)) {
 						if (++n > 1) s += ", ";
@@ -62,7 +62,7 @@ class DataGML {
 					s += ");";
 				} else {
 					i = -1; while (++i < 9) if (i != 4 && dc(i)) {
-						s += "${op}direction = " + moveFixedDirs[i];
+						s += '${op}direction = ' + moveFixedDirs[i];
 					}
 				}
 				if (dcx) s += ";\n}";
