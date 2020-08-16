@@ -753,11 +753,14 @@ class Code {
 			}
 		}
 		return switch (node) {
-		case CoSpace(s):
+		case CoSpace(s), CoElse(s):
 			if (html) {
 				if (!pre) {
 					s = StringTools.replace(s, " ", "&nbsp;");
 					s = StringTools.replace(s, "\n", "<br/>");
+				}
+				if (node.match(CoElse(_))) {
+					s = wrap("error", s);
 				}
 				s;
 			} else s;
@@ -830,6 +833,7 @@ enum CodeNode {
 	CoCub0; // {
 	CoCub1; // }
 	CoHash; // #
+	CoElse(s:String); // anything else
 }
 
 enum CodeNumberType {

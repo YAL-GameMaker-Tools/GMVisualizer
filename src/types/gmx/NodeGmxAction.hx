@@ -1,6 +1,7 @@
 package types.gmx;
 import matcher.MatchResult;
 import types.NodeAction;
+import Code;
 using StringTools;
 
 /**
@@ -65,15 +66,19 @@ class NodeGmxAction extends NodeType {
 				switch (meta.fastCodeAt(pos++)) {
 				case "e".code:
 					var list = [];
-					Code.readExpr(new StringReader(data), list);
+					var dr = new StringReader(data);
+					Code.readExpr(dr, list);
+					if (dr.pos < dr.len) list.push(CoElse(data.substring(dr.pos)));
 					value = list;
 				case "E".code:
 					var list = [];
 					var _ml = Code.multiline;
 					Code.multiline = true;
-					Code.readLines(new StringReader(data), list);
-					Code.multiline = _ml;
+					var dr = new StringReader(data);
+					Code.readLines(dr, list);
+					if (dr.pos < dr.len) list.push(CoElse(data.substring(dr.pos)));
 					value = list;
+					Code.multiline = _ml;
 				case "[".code:
 					end = meta.indexOf("]", pos);
 					var options = meta.substring(pos, end).split("|");

@@ -147,3 +147,5 @@
 .gminfo .code .fd { color: #408; }
 /** preprocessor */
 .gminfo .code .pp { color: #0078AA; }
+/** trailing code in GMX */
+.gminfo .code .error { color: rgb(250,50,50); }
