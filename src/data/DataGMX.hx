@@ -90,7 +90,7 @@ class DataGMX {
 		//}
 		//{ main2
 		add(6, 301, "1[Alarm 0|Alarm 1|Alarm 2|Alarm 3|Alarm 4|Alarm 5|Alarm 6|Alarm 7|Alarm 8|Alarm 9|Alarm 10|Alarm 11]0e"); // Set Alarm
-		add(106, 305, "0*1e2[true|false]3[false|true]"); // Set Time Line
+		add(106, 305, "0*1e2[Start Immediately|Don't Start]3[Don't Loop|Loop]"); // Set Time Line
 		add(107, 304, "0e"); // Time Line Position
 		add(108, 309, "0e"); // Time Line Speed
 		add(206, 306); // Start Time Line
