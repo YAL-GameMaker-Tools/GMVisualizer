@@ -636,6 +636,9 @@ class DataGMLTools {
 	public static function sr(s:String) return s == "<undefined>" ? "-1" : s;
 	/// string->string
 	public static function ss(s:String) {
+		switch (s.charCodeAt(0)) {
+			case "'".code, '"'.code: return s;
+		}
 		if (s.indexOf('"') < 0) {
 			return '"$s"';
 		} else if (s.indexOf("'") < 0) {
