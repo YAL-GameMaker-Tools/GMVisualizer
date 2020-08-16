@@ -148,7 +148,8 @@ class Code {
 				}
 			//} "/"
 			case "<".code, ">".code:
-				if (s.curr == c || s.curr == "=".code) s.pos++;
+				if (c == "<".code && s.curr == ">".code) s.pos++;
+				else if (s.curr == c || s.curr == "=".code) s.pos++;
 				return add(CoOp(part(last, s.pos)));
 			case "&".code, "|".code, "^".code:
 				if (s.curr == "=".code) {
